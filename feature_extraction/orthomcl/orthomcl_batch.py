@@ -20,10 +20,7 @@ def main(target_assembly_path, target_gff_path, orthomcl_folder, pipeline_output
     copy_references_folder_command = "cp -ar {} {}".format(orthomcl_references_folder, run_dir_references_folder)
     gpf.run_system_command(copy_references_folder_command)
     target_proteome_path = orthomcl_folder + "/" + fasta_basename + "_proteome.faa"
-    filtered_target_gff_path = orthomcl_folder + "/" + fasta_basename + "_filtered.gff3"
-    gff_filtering_command = "remove_non_mrna_cds_features.py {} > {}".format(target_gff_path, filtered_target_gff_path)
-    gpf.run_system_command(gff_filtering_command)
-    proteome_extraction_command = "gff_to_transcripts_and_proteins.py {} {} {}".format(target_assembly_path, filtered_target_gff_path, orthomcl_folder)
+    proteome_extraction_command = "gff_to_transcripts_and_proteins.py {} {} {}".format(target_assembly_path, target_gff_path, orthomcl_folder)
     gpf.run_system_command(proteome_extraction_command)
 
     references_subfolders = glob("{}/*/".format(run_dir_references_folder))

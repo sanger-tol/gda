@@ -25,6 +25,8 @@ The Shiny app for viewing clustering results requires R and a number of R librar
 
 ### Notes
 
+This GitLab repository has two branches (`master` and `develop`). The `master` branch is frozen in time at around June 2021 (with only some bug fixes applied later), in order to have a fixed version of the pipeline for running analysis for the GDA manuscript. The `develop` branch has ongoing development. 
+
 We expect that the GDA feature extraction and analysis pipeline is run remotely (e.g. via Sanger farm5-login). Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
 
 The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (Plasmodium falciparum genome assembly) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
@@ -84,6 +86,9 @@ MOVE TO YOUR LOCAL MACHINE (e.g. Sanger laptop)
 
   * Set up environment
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; First clone the GDA Git repository to your local machine:
+`git clone https://gitlab.internal.sanger.ac.uk/ar11/gda.git`
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;These are the required R libraries:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shiny, ggplot2, devtools, svglite, gplots, rjson, reshape2, gridExtra, scales
@@ -94,8 +99,6 @@ MOVE TO YOUR LOCAL MACHINE (e.g. Sanger laptop)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alternatively, the following commands can be used to install a custom conda R environment for the GDA Shiny app:
 ```
-git clone https://gitlab.internal.sanger.ac.uk/ar11/gda.git
-
 # update conda to v4.10.1
 conda update -n base conda
 
@@ -410,12 +413,22 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at `/lustre/scratch118/infgen/team133/ea10/gda_singularity_image/gda_singularity.simg`.
-On the Sanger farm, Singularity can be started from the farm module:
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. Below are the paths to Singularity image files.
+File for the `master` branch of the GDA GitLab repository:
+`/lustre/scratch118/infgen/team133/ea10/gda_singularity_image/20210818_gda_master.simg`
+File for the `develop` branch of the GDA GitLab repository:
+`/lustre/scratch118/infgen/team133/ea10/gda_singularity_image/gda_singularity.simg`
+
+On the Sanger farm, Singularity and Nextflow can be loaded from the farm modules:
 
 `module load ISG/singularity/3.6.4`
+`module load nextflow/21.04.1-5556`
 
-If you wish to use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. This is an example command for extracting genomic features using Singularity:
+If you wish to use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script.
+It is recommended to add the directory where the `gda` wrapper script is located to PATH. 
+`export PATH=$PATH:`(insert path to the directory with the gda wrapper script here)
+
+This is an example command for extracting genomic features using Singularity, assuming the `gda` wrapper script file is in PATH:
 
 `bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path /lustre/scratch118/infgen/team133/ea10/gda_singularity_image/gda_singularity.simg"`
 

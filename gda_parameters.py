@@ -21,7 +21,7 @@ import spectra
 import numpy as np
 from matplotlib.colors import ListedColormap
 
-from gda_clustering import get_palette, run_umap, run_hdbscan
+from gda_clustering import get_palette, run_umap, run_hdbscan, validate_clustering_params
 from sklearn import metrics
 
 # Ignore NUMBA warnings related to running UMAP
@@ -162,9 +162,19 @@ def export_metrics_table(metrics_dict, outdir_full):
     '''Exports the clustering metrics as a CSV table'''
     metrics_df = pd.DataFrame(metrics_dict)
     metrics_df = metrics_df.transpose()
-    metrics_df = metrics_df.sort_values(["silhouette_score", "unclassified_percentage", "davies_bouldin_index", "calinski_harabasz_score"], ascending=[False, True, True, False])
+    metrics_df = metrics_df.sort_values(["silhouette_score_with_penalty", "unclassified_percentage", "davies_bouldin_index", "calinski_harabasz_score"], ascending=[False, True, True, False])
     metrics_outfile = outdir_full + "/clustering_metrics.csv" 
     metrics_df.to_csv(metrics_outfile, index=True)
+
+
+def autogenerate_cluster_size_list(datapoints_count):
+    '''Automatically selects a range of values to try as minimum cluster size cutoff, based on the number of data points'''
+    cluster_size_min = int(round(datapoints_count/100, 0))
+    cluster_size_max = int(round(datapoints_count/2, 0))
+    cluster_size_step = int(round((cluster_size_max - cluster_size_min) / 10, 0))
+    cluster_size_list = list(range(cluster_size_min, cluster_size_max, cluster_size_step))
+    cluster_size_list = [n for n in cluster_size_list if n > 0]
+    return cluster_size_list
 
  
 def main(args):
@@ -172,15 +182,8 @@ def main(args):
     # Procedural code
     #################
 
-    neighbours_list = get_neighbours_list(args.n_neighbors)
-    cluster_size_list = get_cluster_size_list(args.cluster_size_cutoff)
-    outdir = args.directory
-    tracks_file = args.tracks
-
-    set_up_outdir(outdir)
-    outdir_full = outdir + '/parameter_selection'
-
     # Read in GDA data tracks as pandas data frame
+    tracks_file = args.tracks
     data = pd.read_csv(tracks_file, sep='\t', index_col=0)
     data = filter_df_to_keep_selected_scaff(args.selected_scaff_only, data)
 
@@ -191,8 +194,24 @@ def main(args):
     # Make a dataframe with only window_name index and feature values suitable for clustering
     data_to_cluster = data.drop(['species', 'start', 'end', 'chromosome'], axis=1)
 
-    plot_files = dict()
+    neighbours_list = get_neighbours_list(args.n_neighbors)
+    if args.cluster_size_cutoff == "auto":
+        cluster_size_list = autogenerate_cluster_size_list(data_to_cluster.shape[0])
+    else:
+        cluster_size_list = get_cluster_size_list(args.cluster_size_cutoff)
 
+    for n in neighbours_list:
+        for c in cluster_size_list:
+            param_values_dict = {"umap_n_neighbors": n, "hdbscan_min_cluster_size": c, "leaf_size": args.leaf_size, "min_samples": args.min_samples}
+            validate_clustering_params(param_values_dict)
+
+    outdir = args.directory
+    
+
+    set_up_outdir(outdir)
+    outdir_full = outdir + '/parameter_selection'
+
+    plot_files = dict()
 
     # Save cluster props
     all_cluster_props = dict()
@@ -216,7 +235,9 @@ def main(args):
             davies_bouldin_index = None
             calinski_harabasz_score = None
 
-            if len(set(cluster_labels)) > 1:
+            clusters_count = len(set(cluster_labels))
+            classified_clusters_count = len([n for n in set(cluster_labels) if n != -1])
+            if clusters_count > 1:
                 silhouette_score = metrics.silhouette_score(embedding, cluster_labels)
                 davies_bouldin_index = metrics.davies_bouldin_score(embedding, cluster_labels)
                 calinski_harabasz_score = metrics.calinski_harabasz_score(embedding, cluster_labels)
@@ -230,8 +251,15 @@ def main(args):
             if n not in silhouette_scores:
                 silhouette_scores[n] = dict()
             silhouette_scores[n][c] = silhouette_score
+            
+            silhouette_score_with_penalty = silhouette_score
+            if silhouette_score_with_penalty is None:
+                silhouette_score_with_penalty = 0
+            else:
+                if classified_clusters_count < 3:
+                    silhouette_score_with_penalty = silhouette_score * 0.75
 
-            metrics_dict_entry = {"n_neighbors": n, "min_cluster_size": c, "silhouette_score": silhouette_score, "unclassified_percentage": cluster_props[-1], "davies_bouldin_index": davies_bouldin_index, "calinski_harabasz_score": calinski_harabasz_score}
+            metrics_dict_entry = {"n_neighbors": n, "min_cluster_size": c, "silhouette_score": silhouette_score, "unclassified_percentage": cluster_props[-1], "davies_bouldin_index": davies_bouldin_index, "calinski_harabasz_score": calinski_harabasz_score, "clusters_count": clusters_count, "classified_clusters_count": classified_clusters_count, "silhouette_score_with_penalty": silhouette_score_with_penalty}
             metrics_dict_entry_id = str(n) + "_" + str(c)
             metrics_dict[metrics_dict_entry_id] = metrics_dict_entry
 
@@ -275,7 +303,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Genome Decomposition Analysis of windowed tracks - parameter selection')
     parser.add_argument("-n", "--n_neighbors", help="N neighbours argument for UMAP [5,10,15,20,50,100]", default='5,10,15,20,50,100', type=str)
-    parser.add_argument("-c", "--cluster_size_cutoff", help="HDBSCAN min cluster size [50,100,200,500]", default='50,100,200,500', type=str)
+    parser.add_argument("-c", "--cluster_size_cutoff", help="HDBSCAN min cluster size [50,100,200,500]. If the value of this argument is 'auto', the cluster size cutoffs are selected automatically based on the number of data points", default='50,100,200,500', type=str)
     parser.add_argument("-d", "--directory", help="Output dir [gda_out]", default="gda_out", type=str)
     parser.add_argument("--leaf_size", help="leaf_size setting for HDBSCAN (default: 40)", default=40, type=int)
     parser.add_argument("--min_samples", help="min_samples setting for HDBSCAN (default: None)", default=None, type=int)

@@ -10,7 +10,7 @@ chromClusterPositionsUI <- function(id) {
       sidebarPanel(
         helpText("This page shows line charts of the relative positions of UMAP+HDBSCAN clusters in assembly scaffolds. The lengths of scaffolds have been normalised to be equal for this plot. The plot can be used for finding UMAP clusters that tend to be localised at particular regions of scaffolds (e.g. always at scaffold edges)."),
         sliderInput(ns("plot_width_slider"), "Plot width", min=1000, max=2000, value=LINE_CHART_DEFAULT_WIDTH, ticks=FALSE),
-        sliderInput(ns("plot_height_slider"), "Plot height", min=2500, max=5000, value=2500, ticks=FALSE),
+          sliderInput(ns("plot_height_slider"), "Plot height", min=1000, max=5000, value=2500, ticks=FALSE),
         uiOutput(ns("scaff_length_slider_ui")),
         selectInput(ns("plot_format_input"), "Plot file format", choices=c("png", "svg")),
         downloadButton(ns("save"), "Save plot")

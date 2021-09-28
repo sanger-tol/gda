@@ -6,6 +6,7 @@ File for functions that are shared between scripts of the decomposition pipeline
 import general_purpose_functions as gpf
 from collections import OrderedDict
 
+
 def print_gff_header_based_on_fasta(assembly_path):
     """
     Prints GFF header that contains the scaffold lengths, determined by reading the FASTA file
@@ -29,3 +30,16 @@ def get_fasta_sequence_lengths(fasta_path):
         header = header.split()[0]
         fasta_lengths_dict[header] = len(seq)
     return fasta_lengths_dict
+
+
+def get_assembly_size(assembly_path):
+    """
+    Input: path to assembly FASTA file
+    Output: assembly size (bp)
+    """
+    assembly_data = gpf.read_fasta_in_chunks(assembly_path)
+    assembly_size = 0
+    for fasta_tuple in assembly_data:
+        seq = fasta_tuple[1]
+        assembly_size += len(seq)
+    return assembly_size

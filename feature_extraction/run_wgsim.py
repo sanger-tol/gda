@@ -5,18 +5,7 @@ Script for running wgsim to generate simulated reads, mapping these reads and fi
 
 import general_purpose_functions as gpf
 import argparse
-
-def get_assembly_size(assembly_path):
-    """
-    Input: path to assembly FASTA file
-    Output: assembly size (bp)
-    """
-    assembly_data = gpf.read_fasta_in_chunks(assembly_path)
-    assembly_size = 0
-    for fasta_tuple in assembly_data:
-        seq = fasta_tuple[1]
-        assembly_size += len(seq)
-    return assembly_size
+from genome_decomp_pipeline_shared_functions import get_assembly_size
 
 
 def main(fasta_path, wgsim_folder, pipeline_output_folder, chunk_size, threads, target_coverage):
@@ -48,7 +37,7 @@ def main(fasta_path, wgsim_folder, pipeline_output_folder, chunk_size, threads, 
     minimap2_command = "minimap2 -ax sr -t {} {} {} {} > {}".format(str(threads), fasta_path, gzipped_reads_1_path, gzipped_reads_2_path, sam_file_path)
     gpf.run_system_command(minimap2_command)
 
-    sort_sam_command = "sam_to_sorted_indexed_bam.py {} {}".format(sam_file_path, threads)
+    sort_sam_command = "sam_to_sorted_indexed_bam.py {} --fasta_path {} --threads {}".format(sam_file_path, fasta_path, threads)
     gpf.run_system_command(sort_sam_command)
 
     sorted_bam_file_path = wgsim_folder + "/{}_wgsim_reads_minimap2_sorted.bam".format(fasta_basename)

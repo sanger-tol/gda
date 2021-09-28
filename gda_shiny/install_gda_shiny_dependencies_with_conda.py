@@ -26,11 +26,16 @@ def main():
     if which("conda") == None:
         sys.stderr.write("Conda was not found in path\n")
         sys.exit(1)
+    if which("R") == None:
+        sys.stderr.write("R was not found in path\n")
+        sys.exit(1)
 
     kernel_name = platform.system()
     if kernel_name == "Linux" or kernel_name == "Darwin":
         run_command("conda update -n base conda --yes")
-        run_command("conda install -y -c r -c conda-forge r-shiny=1.5.0 r-ggplot2=3.2.1 r-gplots=3.0.3 r-rjson=0.2.20 r-reshape2=1.4.3 r-gridextra=2.3 r-scales=1.0.0 r-svglite=1.2.3")
+        #if which("R") == None:
+        #    run_command("conda install -y -c r -c conda-forge r-essentials=3.6.0 r-base=4.1.0")
+        run_command("conda install -y -c r -c conda-forge -c anaconda r-shiny=1.5.0 r-ggplot2=3.2.1 r-gplots=3.0.3 r-rjson=0.2.20 r-reshape2=1.4.3 r-gridextra=2.3 r-scales=1.0.0 r-svglite=1.2.3 ncurses=6.2")
     else:
         sys.stderr.write("This installation script is meant for Linux and MacOS but your system appears to be {}\n".format(kernel_name))
         sys.exit(1)

@@ -5,7 +5,7 @@ featureTablesUI <- function(id) {
   
   tagList(
     loadingMessageUI(ns("loading_message")),
-    helpText("This table shows the features that were found enriched in each UMAP+HDBSCAN cluster of genomic window (based on Kolmogorov-Smirnov test)"),
+    helpText("This table shows the features that were found enriched in each UMAP+HDBSCAN cluster of genomic windows (based on Kolmogorov-Smirnov test)"),
     uiOutput(ns("datatables"))
   )
 }

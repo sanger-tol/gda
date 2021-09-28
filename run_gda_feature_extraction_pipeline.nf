@@ -290,20 +290,26 @@ process rna_seq_coverage {
 process ltrharvest_and_ltrdigest {
     cache 'deep'
     echo true
-    cpus 1
+    cpus params.threads
     input:
     val input_files_validated_flag from input_file_validation_done_ch
     file assembly_infile from file(assembly_path)
     output:
     val true into ltrharvest_ltrdigest_done_ch 
     script:
-    def ltrharvest_ltrdigest_command = assembly_path + " " + ltr_folder + " " + params.pipeline_output_folder + " --chunk_size " + params.chunk_size
+    def ltrharvest_ltrdigest_command = assembly_path + " " + ltr_folder + " " + params.pipeline_output_folder + " --chunk_size " + params.chunk_size + " --threads " + params.threads
     def ltrharvest_ltrdigest_stdout_path = ltr_folder + "/" + raw_fasta_basename + "_ltrharvest_ltrdigest_stdout.txt"
-    """
-    mkdir -p ${ltr_folder}
-    mkdir -p ${ltr_folder}/temp_files
-    run_ltrharvest_and_ltrdigest.py ${ltrharvest_ltrdigest_command} > ${ltrharvest_ltrdigest_stdout_path} 2> ${params.error_stream_logs_folder}/ltrharvest_ltrdigest_stderr.txt
-    """ 
+    if (params.skip_ltrharvest_ltrdigest == false) {
+        """
+        mkdir -p ${ltr_folder}
+        run_ltrharvest_ltrdigest_with_genome_chunks.py ${ltrharvest_ltrdigest_command} > ${ltrharvest_ltrdigest_stdout_path} 2> ${params.error_stream_logs_folder}/ltrharvest_ltrdigest_stderr.txt
+        """
+    } else {
+        """
+        echo 'Skipping LTRharvest and LTRdigest'
+        """
+    }
+     
 }
 
 
@@ -453,10 +459,29 @@ process merge_bedgraph_files {
     val repeat_families_flag from repeat_family_detection_done_ch
     val gaps_flag from gaps_done_ch
     file assembly_infile from file(assembly_path)
+    output:
+    val true into merging_bedgraph_done_ch
     script:
     """
     mkdir -p ${merged_bedgraph_folder}
     merge_bedgraph_files ${merge_bedgraph_command} 2> ${params.error_stream_logs_folder}/merge_bedgraph_stderr.txt
     autodownsample_merged_tsv.py ${autodownsample_tsv_command} 2> ${params.error_stream_logs_folder}/autodownsample_tsv_stderr.txt
     """
+}
+
+
+process clustering {
+    cache 'deep'
+    echo true
+    cpus 1
+    input:
+    val merging_bedgraph_done_flag from merging_bedgraph_done_ch
+    script:
+    if (params.feature_extraction_only == false) {
+        """
+        mkdir -p ${clustering_folder}
+        autorun_clustering.py ${merged_bedgraph_folder} ${clustering_folder} 2> ${params.error_stream_logs_folder}/autorun_clustering_stderr.txt
+        """
+    }
+    
 }

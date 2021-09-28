@@ -345,7 +345,7 @@ def main():
     parser_extract_genomic_features.add_argument("--repeat_family_detection_engine", dest="repeat_family_detection_engine", type=str, choices=["repeatmodeler", "meshclust2"], help="Software for detecting repeat families. Options: 'repeatmodeler', 'meshclust2'", default="repeatmodeler")
     parser_extract_genomic_features.add_argument("--include_gene_strand_bias", dest="include_gene_strand_bias", help="Boolean argument that determines whether a gene strand bias bedgraph track is produced (based on gene annotations GFF file)", action="store_true")
     parser_extract_genomic_features.add_argument("--skip_ltrharvest_ltrdigest", dest="skip_ltrharvest_ltrdigest", help="Boolean flag that can be used to skip running the LTRharvest and LTRdigest steps of the pipeline", action="store_true")
-    #parser_extract_genomic_features.add_argument("--feature_extraction_only", dest="feature_extraction_only", help="Boolean flag that can be used to skip running clustering after running the genomic feature extraction pipeline", action="store_true")
+    parser_extract_genomic_features.add_argument("--feature_extraction_only", dest="feature_extraction_only", help="Boolean flag that can be used to skip running clustering after running the genomic feature extraction pipeline", action="store_true")
     parser_extract_genomic_features.set_defaults(func=extract_genomic_features)
 
     parser_resume_genomic_feature_extraction = subparsers.add_parser("resume_genomic_feature_extraction", description=resume_genomic_feature_extraction.__doc__)
