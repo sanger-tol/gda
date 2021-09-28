@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Session genome="fal_all.fa" hasGeneTrack="false" hasSequenceTrack="true" version="8">
+  <Resources>
+    <Resource path="Pf3D7/pfalciparum_3D7/clusters.bed"/>
+    <Resource path=""/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_einverted.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_pseudogene.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_mRNA.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_dustmasker_low_complexity.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/pfalciparum_3D7_paralog_count.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_other_repeat_freq.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_cpg_percentage.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/pfalciparum_3D7_species_specific_proteins_ratio.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_gc_percentage.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/pfalciparum_3D7_ortholog_count.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/PlasmoDB-43_Pfalciparum3D7_Genome_fh_stop_codon_freq.bedgraph"/>
+     <Resource path="Pf3D7/bedgraph_output/pfalciparum_3D7_protein_conservation_ratio.bedgraph"/>
+  </Resources>
+</Session>
