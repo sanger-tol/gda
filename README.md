@@ -10,7 +10,10 @@ GDA is developed by Eerik Aunin (ea10@sanger.ac.uk) and Adam Reid (ar11@sanger.a
 
 Below is a diagram of the components of the pipeline.
 
+
 ![](images/Figure_1.png)
+
+(A) Features sets are derived from the genome reference sequence (seq), repeat finding (rep), gene annotations (gene) and evolutionary relationships between genes (orth). Values for each feature are determined for each non-overlapping window of e.g. 5kb across the genome. (B) The resulting matrix of feature values per window is embedded in two dimensions and clustered to identify groups of windows with similar properties. (C) The data can be explored in a number of ways using a web-browser based app. The clustering labels are mapped back to the chromosomes to highlight architectural features and a heatmap displays the features which define the clusters.  
 
 ### Requirements
 
