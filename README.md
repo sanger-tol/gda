@@ -54,7 +54,7 @@ The quick start tutorial will show you how to run the GDA pipeline end-to-end wi
 
   * Clone the GitLab repository (you may need a password for this - try your normal Sanger details)
 
-`git clone https://gitlab.internal.sanger.ac.uk/ar11/gda.git`
+`git clone https://github.com/eeaunin/gda.git`
 
   * Run the conda installation script
 
