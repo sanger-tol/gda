@@ -2,6 +2,31 @@
 """
 Script for combining the output GFF3 files of Augustus, Barrnap and tRNAscan into one GFF3 file
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
@@ -40,7 +65,7 @@ def main(augustus_gff_path, barrnap_gff_path, trnascan_gff_path, fasta_path, out
                     if split_line[2] == "transcript":
                         split_line[2] = "mRNA"
                 f.write("\t".join(split_line) + "\n")
-        
+
     os_command = "gt gff3 -sort -retainids -tidy {} > {}".format(tempfile1_path, tempfile2_path)
     gpf.run_system_command(os_command)
 
@@ -50,7 +75,7 @@ def main(augustus_gff_path, barrnap_gff_path, trnascan_gff_path, fasta_path, out
     os.remove(tempfile1_path)
     os.remove(tempfile2_path)
     os.remove(augustus_gff_path)
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("augustus_gff_path", type=str, help="Path to GFF3 file produced by Augustus")
@@ -61,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument("species_id", type=str, help="Species ID to be used in the output GFF3 file")
     args = parser.parse_args()
     main(args.augustus_gff_path, args.barrnap_gff_path, args.trnascan_gff_path, args.fasta_path, args.out_folder, args.species_id)
-    
+
 
 
 

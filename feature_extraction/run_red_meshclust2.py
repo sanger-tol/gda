@@ -2,6 +2,31 @@
 """
 Script for running Red and MeShClust2 to detect repeat families
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 from collections import defaultdict
@@ -42,7 +67,7 @@ class RepeatCluster:
                 repeat_suffix = "_star"
             out_dict[repeat.name + repeat_suffix] = repeats_fasta_dict[repeat.name]
         return out_dict
-        
+
 
 class RepeatSeq:
     """
@@ -135,7 +160,7 @@ def load_meshclust2_clusters_file(meshclust_outfile_path):
                 clusters_dict[current_cluster_name] = current_cluster
             current_cluster_name = "cluster_" + line.lstrip(">Cluster ")
             current_cluster = RepeatCluster(current_cluster_name)
-        
+
         else:
             repeat_len = int(gpf.spl(line, "\t", "nt"))
             repeat_id = gpf.spl(line, ">", "...")
@@ -151,7 +176,7 @@ def load_meshclust2_clusters_file(meshclust_outfile_path):
             repeat_scaff = line.split(">")[1]
             repeat_scaff = repeat_scaff.split("_")
             repeat_scaff = "_".join(repeat_scaff[0:len(repeat_scaff) - 1])
-            
+
             current_repeat = RepeatSeq(repeat_id, repeat_len, repeat_star, repeat_start_coord, repeat_end_coord, repeat_scaff)
             current_cluster.repeats.append(current_repeat)
     if len(current_cluster.repeats) > 0:
@@ -212,7 +237,7 @@ def run_meshclust2(red_output_folder, pipeline_output_folder, min_repeats_per_cl
     gpf.run_system_command(meshclust2_command)
 
     meshclust_outfile_path = red_output_folder + "/output.clstr"
-    
+
     clusters_dict = load_meshclust2_clusters_file(meshclust_outfile_path)
     export_repeat_families_as_fasta(red_repeat_seq_path, clusters_dict, min_repeats_per_cluster, repeat_families_outfolder)
 
@@ -233,7 +258,7 @@ def run_meshclust2(red_output_folder, pipeline_output_folder, min_repeats_per_cl
 
 def get_meshclust2_consensus_seq(repeat_families_folder, alignments_folder, mafft_consensus_folder, threads):
     """
-    Runs MAFFT and hmmemit to align sequences in each MeShClust2 cluster and to derive the consensus sequence for each cluster 
+    Runs MAFFT and hmmemit to align sequences in each MeShClust2 cluster and to derive the consensus sequence for each cluster
     """
     gpf.run_system_command("mkdir -p " + alignments_folder)
     gpf.run_system_command("mkdir -p " + mafft_consensus_folder)

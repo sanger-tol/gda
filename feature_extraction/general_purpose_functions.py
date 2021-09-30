@@ -3,6 +3,31 @@
 General purpose functions
 File for functions that can be reused in many Python scripts
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os
 from os.path import isfile
@@ -23,7 +48,7 @@ def l(path):
             lines = [x.rstrip() for x in lines]
     else:
         sys.stderr.write("Error: file not found (" + path + ")\n")
-        sys.exit(1)  
+        sys.exit(1)
     return lines
 
 
@@ -125,8 +150,8 @@ def list_to_chunks(lst, n):
     """
     for i in range(0, len(lst), n):
         yield lst[i: i + n]
-        
-        
+
+
 def string_to_chunks(line, n):
     """
     Function for splitting a string every nth character
@@ -186,6 +211,6 @@ def get_file_paths(in_folder_path, extension):
         sys.stderr.write("Error: folder not found (" + in_folder_path + ")\n")
         sys.exit(1)
     return selected_file_paths
-        
+
 
 

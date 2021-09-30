@@ -1,8 +1,33 @@
 #!/usr/bin/env python3
 """
-Script for counting cluster junctions between windows in the GDA output 'clusters.bed' file. 
+Script for counting cluster junctions between windows in the GDA output 'clusters.bed' file.
 Fisher test is used to determine if some types of cluster junctions occur more rarely or often that expected by chance
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from collections import OrderedDict
 import pandas as pd
@@ -30,7 +55,7 @@ def get_observed_counts(clusters_dict, cluster_pairs):
 
 def get_probablities_dict(clusters_list, cluster_pairs):
     """
-    Finds the probabilities of observing each type of cluster junctions if the junctions were distributed by chance, 
+    Finds the probabilities of observing each type of cluster junctions if the junctions were distributed by chance,
         given the number of windows in each cluster
     """
     clusters_list_len = len(clusters_list)
@@ -74,7 +99,7 @@ def cluster_junctions_fisher_test(observed_counts_dict, expected_counts_dict):
         Fisher test odds ratio and p values
 
     Fisher test matrix:
-    
+
                        observed    expected
      selected_junction a           b
      other_junctions   c           d
@@ -101,7 +126,7 @@ def cluster_junctions_fisher_test(observed_counts_dict, expected_counts_dict):
         oddsratio, pvalue = stats.fisher_exact(fisher_matrix)
         oddsratios_list.append(oddsratio)
         pvalues_list.append(pvalue)
-    
+
     corrected_pvalues = statsmodels.stats.multitest.multipletests(pvalues_list, alpha=0.05, method="fdr_bh")
 
     df["oddsratio"] = oddsratios_list
@@ -129,7 +154,7 @@ def load_clusters_dict(bed_file_path):
 
 def condense_counts_dict(input_dict, cluster_pairs_condensed):
     """
-    Goes through the dictionary with cluster junction counts and merges the counts for cluster pairs that have the same elements. 
+    Goes through the dictionary with cluster junction counts and merges the counts for cluster pairs that have the same elements.
         E.g. pair (1,4) is the same as (4,1), so the counts of (4,1) added to the counts of (1,4), and (4,1) is removed from the dictionary
     """
     condensed_dict = OrderedDict()

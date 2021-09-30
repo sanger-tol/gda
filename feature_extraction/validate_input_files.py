@@ -2,6 +2,31 @@
 """
 Script for validating the input files of the GDA feature extraction pipeline
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import mimetypes
@@ -101,7 +126,7 @@ class FastaChecker(UnicodeFileChecker):
         if self.sequence_type == "protein" and characters_outside_dna_set_count == 0:
             sys.stderr.write("Warning: the file {} that was provided as a protein FASTA file might actually be a DNA FASTA file, based on its content\n".format(self.in_path))
 
-    
+
     def check_fasta_sequences_count(self):
         """
         Checks whether the number of sequences in the file exceeds a limit (if a limit has been defined)
@@ -159,7 +184,7 @@ class GFF_checker(UnicodeFileChecker):
         super().__init__(gff_path)
         self.gff_path = gff_path
         self.fasta_path = fasta_path
-    
+
     def gt_validate_gff(self):
         """
         Validating a GFF3 file using GenomeTools GFF3 Validator
@@ -347,7 +372,7 @@ def validate_orthomcl_references_folder(orthomcl_ref_folder):
                     else:
                         sys.stderr.write("No reference proteome files were found in OrthoMCL reference proteomes folder ({})\n".format(ref_subfolder))
                         sys.exit(1)
-                        
+
                 else:
                     sys.stderr.write("The required file named 'table_for_gg_file.csv' was not found in an OrthoMCL reference proteomes folder ({})\n".format(ref_subfolder))
                     sys.exit(1)
@@ -366,14 +391,14 @@ def check_filenames_for_bad_characters(filenames_list):
 
 
 def main(target_assembly_fasta_path, target_assembly_gff_path, liftoff_reference_fasta_path, liftoff_reference_gff_path, ref_mitoch_fasta_path, ref_apicoplast_fasta_path, rna_seq_fq1_path, rna_seq_fq2_path, orthomcl_ref_folder, chunk_size):
-    
+
     input_filenames_list = [target_assembly_fasta_path, target_assembly_gff_path, liftoff_reference_fasta_path, liftoff_reference_gff_path, ref_mitoch_fasta_path, ref_apicoplast_fasta_path, rna_seq_fq1_path, rna_seq_fq2_path]
     input_filenames_list = [os.path.abspath(n) for n in input_filenames_list]
     check_filenames_for_bad_characters(input_filenames_list)
-    
+
     script_folder = os.path.dirname(os.path.abspath(__file__))
     validatefastq_path = script_folder + "/third_party_files/validatefastq-assembly-0.1.1.jar"
-    
+
     fc = FastaChecker(target_assembly_fasta_path, "nucleotide", max_sequences=None, min_total_seq_len=chunk_size, min_longest_seq_len=chunk_size)
     fc.process_fasta()
 
@@ -394,7 +419,7 @@ def main(target_assembly_fasta_path, target_assembly_gff_path, liftoff_reference
     if ref_apicoplast_fasta_path != "NA":
         fc = FastaChecker(ref_apicoplast_fasta_path, "nucleotide", max_sequences=1)
         fc.process_fasta()
-    
+
     if rna_seq_fq1_path != "NA" and rna_seq_fq2_path != "NA":
         validate_fastq_files(validatefastq_path, rna_seq_fq1_path, rna_seq_fq2_path)
 

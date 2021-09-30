@@ -2,6 +2,31 @@
 """
 Master script for running gene annotation scripts for GDA
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
@@ -15,7 +40,7 @@ def main(target_assembly_path, pipeline_run_folder, pipeline_output_folder, augu
 
     fasta_basename_with_extension = target_assembly_path.split("/")[-1]
     fasta_basename = fasta_basename_with_extension.split(".")[0]
-    
+
     target_species_id = target_species_id.replace(" ", "_")
     target_species_id = target_species_id.replace("\t", "_")
 
@@ -24,7 +49,7 @@ def main(target_assembly_path, pipeline_run_folder, pipeline_output_folder, augu
     gpf.run_system_command("mkdir -p " + pipeline_output_folder, dry_run=dry_run_flag)
     gpf.run_system_command("mkdir -p " + gene_annotation_folder, dry_run=dry_run_flag)
     os.chdir(gene_annotation_folder)
-    
+
     #=== Liftoff ===
     liftoff_folder = gene_annotation_folder + "/liftoff"
     gpf.run_system_command("mkdir -p " + liftoff_folder, dry_run=dry_run_flag)
@@ -47,7 +72,7 @@ def main(target_assembly_path, pipeline_run_folder, pipeline_output_folder, augu
             if os.path.isfile(reference_gff_path) == False:
                 sys.stderr.write("{}\n".format(reference_gff_path))
     os.chdir(gene_annotation_folder)
-    
+
     #=== Augustus ===
     augustus_gff_path = "{}/{}_augustus_merge_filtered.gff".format(gene_annotation_folder, fasta_basename)
     augustus_command = "run_augustus.py {} {} {} --hints_gff_path {} --augustus_chunk_overlap {} --augustus_chunk_size {} --threads {}".format(target_assembly_path, gene_annotation_folder, augustus_species, liftoff_augustus_hints_path, augustus_chunk_overlap, augustus_chunk_size, threads)
@@ -71,7 +96,7 @@ def main(target_assembly_path, pipeline_run_folder, pipeline_output_folder, augu
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("target_assembly_path", type=str, help="Path to the assembly that will be annotated")
-    
+
     parser.add_argument("pipeline_run_folder", type=str, help="Folder path for pipeline output files")
     parser.add_argument("pipeline_output_folder", type=str, help="Folder path for main output files of the pipeline (where bedgraph files will be saved)")
     parser.add_argument("augustus_species", type=str, help="Augustus species")

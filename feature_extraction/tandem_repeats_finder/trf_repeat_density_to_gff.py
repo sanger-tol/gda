@@ -1,7 +1,32 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 """
 Script for converting Tandem Repeats Finder repeat density values (that have been divided into repeat-rich and repeat-poor regions) into GFF or BED format
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import sys
 import os.path
@@ -50,7 +75,7 @@ def print_reformatted_df(df, out_format, assembly_path):
         chunk_start = min(df_chunk["start_pos"]) + 1
         chunk_end = max(df_chunk["end_pos"]) + 1
         chunk_N_fraction = df_chunk["N_fraction"].mean()
-        
+
         repeat_rich_flag = df_chunk["repeat_rich_flag"].values[0]
         region_type = None
         if repeat_rich_flag == True:
@@ -81,6 +106,6 @@ if __name__ == "__main__":
         parser.error("GFF option requires the --assembly_path argument")
     main(args.repeat_density_path, args.out_format, args.assembly_path)
 
-    
+
 
 

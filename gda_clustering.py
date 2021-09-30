@@ -3,6 +3,31 @@
 Code to generate GDA analysis
 A script for turning GDA tracks into analysed clusters
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Authors: Adam Reid (ar11@sanger.ac.uk), Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 # Several species-specific analyses are done based on BedFile objects
 from BedFile import BedFile
@@ -68,7 +93,7 @@ def run_umap(data, n_neighbors=13):
 def run_hdbscan(embedding, leaf_size, min_samples, min_cluster_size=200):
     '''Cluster UMAP embedding with HDBSCAN, return cluster labels'''
     clusterer = hdbscan.HDBSCAN(algorithm='best', alpha=1.0, approx_min_span_tree=True,
-        gen_min_span_tree=False, leaf_size=leaf_size, 
+        gen_min_span_tree=False, leaf_size=leaf_size,
         metric='euclidean', min_cluster_size=min_cluster_size, min_samples=min_samples, p=None)
     clusterer.fit(embedding)
     return(clusterer.labels_)
@@ -246,7 +271,7 @@ def write_circos_json(json_dict, outfile, outdir):
     with open(outdir + '/' + outfile, 'w') as file:
         file.write(json.dumps(json_dict))
 
-        
+
 def main(umap_n_neighbors, hdbscan_min_cluster_size, pvalue_cutoff, cluster_position_histogram_window_number, outdir, tracks_file):
     #################
     # Procedural code
@@ -305,7 +330,7 @@ def main(umap_n_neighbors, hdbscan_min_cluster_size, pvalue_cutoff, cluster_posi
     genome_prop_outfile = "genomeprops.csv"
     write_genome_prop(cluster_species_genome_prop, genome_prop_outfile, outdir)
 
-    # Write cluster/feature heatmap data 
+    # Write cluster/feature heatmap data
     cluster_heatmap_filename = 'cluster_heatmap.csv'
     write_cluster_heatmap(cluster_means, sig_features, cluster_heatmap_filename, outdir)
 
@@ -351,7 +376,7 @@ def main(umap_n_neighbors, hdbscan_min_cluster_size, pvalue_cutoff, cluster_posi
         ######################
         circos_json_dict = bed_data.circos_json()
         write_circos_json(circos_json_dict, 'circos.json', outdir + '/' + s + '/')
-        
+
 
 if __name__ == "__main__":
     ###############
@@ -368,6 +393,6 @@ if __name__ == "__main__":
     parser.add_argument("tracks", help="File of windowed GDA tracks", type=str)
     args = parser.parse_args()
     main(args.n_neighbors, args.cluster_size_cutoff, args.pvalue_cutoff, args.cluster_position_histogram_window_number, args.directory, args.tracks)
-    
+
 
 

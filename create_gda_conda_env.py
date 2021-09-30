@@ -10,6 +10,31 @@ GDA git repository files
 g++ 4.9.1 or later
 conda
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import os
 import sys
@@ -87,7 +112,7 @@ def get_dfam_hmms(dfam_user_folder, gda_downloads_folder, dfam_file_names):
             src_path = dfam_user_folder + "/" + dfam_file
             dst_path = dfam_hmms_folder + "/" + dfam_file
             copyfile(src_path, dst_path)
-    
+
 
 def check_user_provided_dfam_folder(dfam_user_folder, dfam_file_names):
     """
@@ -171,7 +196,7 @@ def main(env_name, gda_downloads_folder, gda_python_scripts_folder, download_dfa
     if os.path.isdir(gda_python_scripts_folder) == False:
         sys.stderr.write("Directory not found: {}".format(gda_python_scripts_folder))
         sys.exit(1)
-    
+
     gda_scripts_folder_files = os.listdir(gda_python_scripts_folder)
     if "gda" not in gda_scripts_folder_files or "feature_extraction" not in gda_scripts_folder_files:
         sys.stderr.write("Based on folder contents, the folder {} do not appear to be the base of GDA Python scripts folder\n".format(gda_python_scripts_folder))
@@ -186,9 +211,9 @@ def main(env_name, gda_downloads_folder, gda_python_scripts_folder, download_dfa
     # r-shiny=1.1.0 r-rjson=0.2.20 r-reshape2=1.4.3 r-gridextra=2.3 r-scales=1.0.0 r-svglite=1.2.3
 
     channels = ["conda-forge", "bioconda", "biocore", "r", "anaconda", "jmcmurray"]
-    
+
     channels_string = "-c " + " -c ".join(channels)
-    
+
     run_system_command("conda create -y --name {} {} {}".format(env_name, packages_to_install, channels_string))
 
     conda_base_path = subprocess.check_output(['conda', 'info', '--base'])
@@ -243,6 +268,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args.env_name, args.gda_downloads_folder, args.gda_python_scripts_folder, args.download_dfam_db, args.dfam_user_folder)
 
-    
-    
+
+
 

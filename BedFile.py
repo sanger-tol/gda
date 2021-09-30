@@ -1,7 +1,35 @@
 #!/usr/bin/env python3
+"""
+Class for representing BED files
+"""
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+#
+# Author: Adam Reid (ar11@sanger.ac.uk)
+#
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 class BedFile():
-    ''' Parse bed file to get (amongst other things) composition of chromsomes in terms of features'''
+    ''' Parse bed file to get (amongst other things) composition of chromosomes in terms of features'''
     def __init__(self, bed_file):
         self.chromosomes = set()
         self.all_features = set()
@@ -36,7 +64,7 @@ class BedFile():
             self.features_per_chromosome[v[0]] = self.features_per_chromosome[v[0]] + 1
 
         b.close()
-    
+
     def circos_json(self):
         json_dict = dict()
         json_dict['genome'] = list()
