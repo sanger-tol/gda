@@ -2,6 +2,31 @@
 """
 Script for splitting a genome assembly into chunks with fixed size and running LTRharvest + LTRdigest with the chunks
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import os
@@ -42,7 +67,7 @@ def run_ltrharvest_ltrdigest_with_chunks(run_folder, threads):
 
     ltrharvest_ltrdigest_folder = run_folder + "/ltrharvest_ltrdigest_chunks"
     gpf.run_system_command("mkdir -p " + ltrharvest_ltrdigest_folder)
-    
+
     parallel_args = list()
     for split_fasta_file in split_fasta_files:
         split_fasta_basename = split_fasta_file.split("/")[-1]
@@ -92,7 +117,7 @@ def merge_ltrdigest_gffs(ltrdigest_filtered_gffs, output_gff_path):
                 assert len(region_coords) == 2
                 scaff_name = region_coords[0]
                 region_offset = int(region_coords[1].split("-")[0])
-                
+
                 for line in gff_data[2:len(gff_data)]:
                     if line.startswith("#") == False:
                         split_line = line.split()
@@ -141,7 +166,7 @@ def main(input_fasta_path, run_folder, pipeline_output_folder, bedgraph_chunk_si
 
     gpf.run_system_command("gff_features_to_bedgraph.py {} LTR_retrotransposon LTRdigest_LTR_retrotransposon --chunk_size {} --assembly_fasta_path {} > {}".format(merged_gff_path, bedgraph_chunk_size, input_fasta_path, ltr_retrotransposon_bedgraph_path))
     gpf.run_system_command("gff_features_to_bedgraph.py {} protein_match LTRdigest_protein_match --chunk_size {} --assembly_fasta_path {} > {}".format(merged_gff_path, bedgraph_chunk_size, input_fasta_path, ltr_protein_match_bedgraph_path))
-    
+
     split_fasta_folder = run_folder + "/split_fasta"
     shutil.rmtree(split_fasta_folder)
     shutil.rmtree(ltrdigest_chunks_folder)

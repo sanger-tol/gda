@@ -2,6 +2,31 @@
 """
 Script for finding sequence GC, GC skew, stop codon frequency and frequency of some repeat motifs in a FASTA file with sliding window
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import sys
@@ -137,6 +162,6 @@ if __name__ == "__main__":
     parser.add_argument("--telomeric_seq_preset", type=str, help="Telomeric sequence type preset (default: vertebrates)", default="vertebrates", choices=["vertebrates", "paramecium", "apicomplexan", "oxytricha", "arabidopsis_thaliana", "cestrum_elegans", "allium", "zostera_marina", "green_algae", "insects", "roundworms", "saccharomyces_cerevisiae", "saccharomyces_castellii", "candida_glabrata", "candida_albicans", "candida_tropicalis", "candida_maltosa", "candida_guillermondii", "candida_pseudotropicalis", "kluyveromyces_lactis", "schizosaccharomyces_pombe", "dictyostelium" "tetrahymena"])
     parser.add_argument("--custom_telomeric_seq", type=str, help="Optional: telomeric sequence(s) as a comma separated string, e.g. 'TTAGGGT,TTAGGGC'. If a sequence is entered here, it overrides the telomeric sequence type preset. Default: None", default=None)
     args = parser.parse_args()
-    main(args.in_path, args.out_folder, args.pipeline_output_folder, args.chunk_size, args.min_repeat_unit_count, args.telomeric_seq_preset, args.custom_telomeric_seq) 
+    main(args.in_path, args.out_folder, args.pipeline_output_folder, args.chunk_size, args.min_repeat_unit_count, args.telomeric_seq_preset, args.custom_telomeric_seq)
 
-   
+

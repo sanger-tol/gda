@@ -2,6 +2,31 @@
 """
 Script for filtering the BLAST results to detect ectopic mitochondrial and apicoplast sequences. The script outputs the ectopic mitochondrion and apicoplast BLAST hits as GFF
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import argparse
 import sys
@@ -15,7 +40,7 @@ def get_putative_organellar_scaffolds(blast_df, fasta_lengths_dict):
     Function for detecting scaffolds that are probably the real mitochondrion or apicoplast (as opposed to ectopic mitochondrion or apicoplast).
         This is determined by the percentage of the scaffold that gets aligned with a reference organelle sequence.
     Input: 1) data frame with BLAST results, 2) dictionary with FASTA sequence lengths
-    Output: list of putative organellar scaffolds 
+    Output: list of putative organellar scaffolds
     """
     alignment_lengths_dict = defaultdict(int)
     for row_tuple in blast_df.iterrows():
@@ -67,7 +92,7 @@ def output_selected_blast_hits_as_gff(gff_path, df2, fasta_lengths_dict, seq_typ
             row = row_tuple[1]
             out_line = "\t".join([row["qseqid"], "blast", "putative_ectopic_" + seq_type, str(row["qstart"]), str(row["qend"]), str(row["bitscore"]), ".", ".", target_seqid + "_match_" + str(counter).zfill(3), "\n"])
             f.write(out_line)
-    
+
 
 def main(blast_results_path, assembly_fasta_path, gff_path, seq_type, target_seqid, ectopic_organellar_length_cutoff, ectopic_organellar_pident_cutoff):
     fasta_lengths_dict = get_fasta_sequence_lengths(assembly_fasta_path)

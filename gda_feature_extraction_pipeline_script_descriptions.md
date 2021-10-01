@@ -3,11 +3,21 @@ Most of these scripts are are triggered by the Nextflow master script for the ex
 <br/>
 <br/>
 ## Main ##
-**clusters_csv_to_bed_file.py**<br/>
-Script for converting the UMAP + HDBSCAN genomic region clusters to BED file format<br/>
+**autodownsample_merged_tsv.py**<br/>
+Script for automatically triggering the downsampling of the TSV table that has been derived by merging bedgraph files<br/>
+<br/>
+**autorun_clustering.py**<br/>
+Script for automatically running the gda_parameters.py and gda_clustering.py scripts after running the genomic feature extraction<br/>
+<br/>
+**cluster_junctions_fisher_test.py**<br/>
+Script for counting cluster junctions between windows in the GDA output 'clusters.bed' file.<br/>
+Fisher test is used to determine if some types of cluster junctions occur more rarely or often that expected by chance<br/>
 <br/>
 **convert_einverted_output_to_gff.py**<br/>
 Script for converting the output of EMBOSS einverted to GFF3 format<br/>
+<br/>
+**count_neighbouring_clusters_in_bed_file.py**<br/>
+Script for counting neighboring clusters of each cluster in GDA output BED file<br/>
 <br/>
 **decomposition_gc_skew_repeats_sliding_window.py**<br/>
 Script for finding sequence GC, GC skew, stop codon frequency and frequency of some repeat motifs in a FASTA file with sliding window<br/>
@@ -40,6 +50,11 @@ File for functions that can be reused in many Python scripts<br/>
 **genome_decomp_pipeline_shared_functions.py**<br/>
 File for functions that are shared between scripts of the decomposition pipeline<br/>
 <br/>
+**get_fasta_sequence_lengths.py**<br/>
+Script for extracting sequence names and lengths from a FASTA file<br/>
+Argument1: path to FASTA file<br/>
+Output: csv table printed to STDOUT. First column: sequence names. Second column: sequence lengths.<br/>
+<br/>
 **gff_features_to_bedgraph.py**<br/>
 Script for converting GFF features to bedgraph format. Output (STDOUT): a bedgraph file with the fractions of regions that contain the query feature in fixed length chunks of scaffolds<br/>
 <br/>
@@ -50,8 +65,9 @@ Output: bedgraph files for the counts of kmers in every sliding window step acro
 **map_rna-seq_reads_and_get_coverage.py**<br/>
 Script for getting RNA-Seq read coverage for decomposition analysis of genomes<br/>
 <br/>
-**merged_table_csv_to_tsv.py**<br/>
-Script converting the CSV from merged bedgraph files to the newer TSV format<br/>
+**quick_test_feature_extraction_pipeline.py**<br/>
+Script for running a quick test of the genomic feature extraction pipeline of GDA with P. falciparum chromosome 1 as the input.<br/>
+This script runs all the mandatory parts of the pipeline but skips most of the optional parts<br/>
 <br/>
 **run_blast_to_detect_ectopic_organellar_seq.py**<br/>
 Script for detection of ectopic organellar sequences using BLAST<br/>
@@ -65,6 +81,12 @@ Script for running einverted to detect inverted repeats<br/>
 **run_ltrharvest_and_ltrdigest.py**<br/>
 Script for running LTRharvest and LTRdigest<br/>
 <br/>
+**run_ltrharvest_and_ltrdigest_with_genome_chunk.py**<br/>
+Script for running LTRharvest and LTRdigest<br/>
+<br/>
+**run_ltrharvest_ltrdigest_with_genome_chunks.py**<br/>
+Script for splitting a genome assembly into chunks with fixed size and running LTRharvest + LTRdigest with the chunks<br/>
+<br/>
 **run_red_meshclust2.py**<br/>
 Script for running Red and MeShClust2 to detect repeat families<br/>
 <br/>
@@ -73,14 +95,22 @@ Script for running wgsim to generate simulated reads, mapping these reads and fi
 <br/>
 **sam_to_sorted_indexed_bam.py**<br/>
 Script conversion of .sam file with mapped reads to sorted and indexed .bam file<br/>
-Argument1: path to .sam file<br/>
-Argument2: number of threads<br/>
 <br/>
 **samtools_depth_to_bedgraph.py**<br/>
 Script for converting coverage data (based on SAMtools depth) to bedgraph format. Output (STDOUT): a bedgraph file with mean coverage of fixed length chunks of scaffolds<br/>
 <br/>
 **shorten_fasta_headers.py**<br/>
 Script for shortening FASTA headers, by splitting the header and keeping only the first element<br/>
+<br/>
+**split_assembly.py**<br/>
+Script for splitting a genome assembly into chunks with fixed size<br/>
+<br/>
+**split_multifasta_with_fixed_nr_of_sequences.py**<br/>
+Script for dividing a multiFASTA file into smaller FASTA files with a fixed number of sequences<br/>
+Argument1: path to input FASTA file<br/>
+Argument2: path for output folder<br/>
+Argument3: number of sequences per output file<br/>
+Output: original FASTA file split into individual files<br/>
 <br/>
 **stats_per_gene_to_bedgraph.py**<br/>
 Script for converting the table of stats per each gene to bedgraph<br/>
@@ -138,8 +168,8 @@ Script for running OrthoMCL as batch<br/>
 **orthomcl_conservation.py**<br/>
 Script for converting OrthoMCL results into a table of paralog counts, ortholog counts and conservation ratio<br/>
 <br/>
-**prepend_species_ids_to_protein_fasta_headers.py**<br/>
-Script for prepending species IDs to FASTA headers that are meant to be used for OrthoMCL<br/>
+**remove_non_mrna_cds_features.py**<br/>
+Script for processing a GFF3 file to remove CDS features whose parent feature is something other than 'mRNA'<br/>
 <br/>
 **run_orthomcl.py**<br/>
 Script for running OrthoMCL (including Diamond blastp for OrthoMCL)<br/>
@@ -153,13 +183,8 @@ Input: GFF with repeat locations from RepeatMasker, processed with process_repea
 Output: simple repeats GFF with redundant sequences collapsed into one sequence<br/>
 <br/>
 **find_repeats_enriched_at_scaff_edges.R**<br/>
-Script for detecting repeats that are enriched at scaffold edges<br/>
-Argument1: path to the tab separated table that has been generated by merging bedgraph files of the decomposition pipeline<br/>
-Argument2: assembly ID, e.g. idSyrPip1<br/>
-Argument3: assembly title, e.g. Syritta pipiens<br/>
-Argument4: path to folder for output files<br/>
-Argument5: length of scaffold edge (max distance from the scaffold end, bp)<br/>
-Argument6: chunk size (window length)<br/>
+Script for using RepeatModeler's repeat families output for detecting repeats that are enriched at scaffold edges<br/>
+This is not a component of the main pipeline of GDA but can be used as an extra step to get more information out of the data<br/>
 <br/>
 **process_repeatmasker_gffs.py**<br/>
 Script for running scripts that process RepeatMasker gff files<br/>
@@ -169,13 +194,6 @@ Script for splitting the simple and complex repeat lines in RepeatMasker GFF out
 <br/>
 **repeatmasker_gff_to_bedgraph.py**<br/>
 Script for converting RepeatMasker repeat coordinates from GFF to bedgraph<br/>
-<br/>
-**repeatmasker_simple_repeat_freq.R**<br/>
-Script for checking simple repeat frequencies in RepeatMasker output<br/>
-Argument1: assembly title, e.g. "E. tenella"<br/>
-Argument2: path to CSV file with RepeatMasker simple repeat frequencies (output of repeatmasker_simple_repeat_frequencies.py)<br/>
-Argument3: output file path for histogram<br/>
-Argument4: output file path for scatter plot<br/>
 <br/>
 **repeatmasker_simple_repeat_frequencies.py**<br/>
 Script for finding simple repeat frequencies in in GFF derived from the output of RepeatModeler + RepeatMasker<br/>

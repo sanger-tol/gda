@@ -8,6 +8,31 @@ Input arguments:
 2. n_neighbour values, default: 5, 10, 15, 20, 50, 100
 3. cluster_size values, default: 50, 100, 200, 500
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Authors: Adam Reid (ar11@sanger.ac.uk), Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import argparse
 import sys
@@ -33,7 +58,7 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=NumbaWarning)
 # Ignore matplotlib's "More than 20 figures have been opened" warning
-plt.rcParams.update({'figure.max_open_warning': 0}) 
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 
 
@@ -79,7 +104,7 @@ def set_up_outdir(outdir):
         os.mkdir(outdir + '/parameter_selection')
     else:
         sys.stderr.write("{} already exists\n".format(outdir + '/parameter_selection'))
-    
+
 
 def get_html_string(neighbours_list, cluster_size_list, plot_files, all_cluster_props, silhouette_scores):
     '''Produces a string of HTML code that will later be written as a file'''
@@ -163,7 +188,7 @@ def export_metrics_table(metrics_dict, outdir_full):
     metrics_df = pd.DataFrame(metrics_dict)
     metrics_df = metrics_df.transpose()
     metrics_df = metrics_df.sort_values(["silhouette_score_with_penalty", "unclassified_percentage", "davies_bouldin_index", "calinski_harabasz_score"], ascending=[False, True, True, False])
-    metrics_outfile = outdir_full + "/clustering_metrics.csv" 
+    metrics_outfile = outdir_full + "/clustering_metrics.csv"
     metrics_df.to_csv(metrics_outfile, index=True)
 
 
@@ -176,7 +201,7 @@ def autogenerate_cluster_size_list(datapoints_count):
     cluster_size_list = [n for n in cluster_size_list if n > 0]
     return cluster_size_list
 
- 
+
 def main(args):
     #################
     # Procedural code
@@ -206,7 +231,7 @@ def main(args):
             validate_clustering_params(param_values_dict)
 
     outdir = args.directory
-    
+
 
     set_up_outdir(outdir)
     outdir_full = outdir + '/parameter_selection'
@@ -230,7 +255,7 @@ def main(args):
         for c in cluster_size_list:
             cluster_labels = run_hdbscan(embedding, args.leaf_size, args.min_samples, min_cluster_size=c)
 
-            # Calculate Silhouette score, Davies-Bouldin index and Calinski-Harabasz score to assess how well clustering with the selected settings has worked 
+            # Calculate Silhouette score, Davies-Bouldin index and Calinski-Harabasz score to assess how well clustering with the selected settings has worked
             silhouette_score = None
             davies_bouldin_index = None
             calinski_harabasz_score = None
@@ -243,7 +268,7 @@ def main(args):
                 calinski_harabasz_score = metrics.calinski_harabasz_score(embedding, cluster_labels)
 
             cluster_props = get_cluster_props(cluster_labels)
-            
+
             if n not in all_cluster_props:
                 all_cluster_props[n] = dict()
             all_cluster_props[n][c] = cluster_props
@@ -251,7 +276,7 @@ def main(args):
             if n not in silhouette_scores:
                 silhouette_scores[n] = dict()
             silhouette_scores[n][c] = silhouette_score
-            
+
             silhouette_score_with_penalty = silhouette_score
             if silhouette_score_with_penalty is None:
                 silhouette_score_with_penalty = 0
@@ -272,7 +297,7 @@ def main(args):
 
             ax = plt.subplots()[1]
             scatter = ax.scatter(embedding[:,0], embedding[:,1], c=cluster_labels, cmap=cmap1, s=0.3)
-            
+
             # Shrink current axis by 20%
             box = ax.get_position()
             ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -292,7 +317,7 @@ def main(args):
 
     html = get_html_string(neighbours_list, cluster_size_list, plot_files, all_cluster_props, silhouette_scores)
 
-    with open('{}/parameters.html'.format(outdir_full), 'w') as o: 
+    with open('{}/parameters.html'.format(outdir_full), 'w') as o:
         o.write(html)
 
     sys.stderr.write('Please load this file into your browser to view results:\n\n{}/parameters.html\n'.format(outdir_full))

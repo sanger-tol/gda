@@ -2,6 +2,31 @@
 """
 Script for extracting gene statistics (length, exon count, intron count, strand) from a GFF file
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import numpy as np
 import sys
@@ -28,7 +53,7 @@ class Gene:
         self.end = end
         self.strand = strand
         self.exons = list()
-    
+
     def add_exon(self, exon_start, exon_end):
         """
         Adding one exon to the gene
@@ -82,7 +107,7 @@ def print_genes_dict_contents(genes_dict):
             sys.stderr.write("No exons with valid coordinates found for mRNA {}\n".format(str(mrna_id)))
 
 
-def main(gff_path):    
+def main(gff_path):
     genes_dict = OrderedDict()
     gff_data = gpf.l(gff_path)
     for line in gff_data:
@@ -101,10 +126,10 @@ def main(gff_path):
                     genes_dict[exon_gene_id].add_exon(exon_start, exon_end)
     print_genes_dict_contents(genes_dict)
 
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("gff_path", type=str, help="Path to input GFF file")
     args = parser.parse_args()
     main(args.gff_path)
-    
+

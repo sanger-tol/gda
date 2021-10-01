@@ -2,6 +2,31 @@
 """
 Script for counting neighboring clusters of each cluster in GDA output BED file
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import numpy as np
@@ -38,14 +63,14 @@ def main(in_path, out_path):
     previous_cluster = None
 
     for line in in_data:
-        
+
         split_line = line.split()
         cluster = int(split_line[3])
         scaff = split_line[0]
         if scaff == previous_scaff:
             if previous_cluster is not None:
                 if cluster != previous_cluster:
-                    
+
                     junction = None
                     if previous_cluster < cluster:
                         junction = (previous_cluster, cluster)
@@ -59,7 +84,7 @@ def main(in_path, out_path):
 
     df = (df.apply(np.log2))
 
-    cmap=LinearSegmentedColormap.from_list('rg',["r", "y", "g"], N=256) 
+    cmap=LinearSegmentedColormap.from_list('rg',["r", "y", "g"], N=256)
 
     fig = plt.figure()
 

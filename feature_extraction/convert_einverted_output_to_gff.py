@@ -2,6 +2,31 @@
 """
 Script for converting the output of EMBOSS einverted to GFF3 format
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import argparse
@@ -32,7 +57,7 @@ def main(einverted_file_path, fasta_path):
     line_counter = 0
     for line in in_data:
         mod_val = line_counter % 5
-        
+
         if mod_val == 0:
             if repeat_dict is not None:
                 coords_collection.append(repeat_dict)
@@ -55,7 +80,7 @@ def main(einverted_file_path, fasta_path):
             split_line = line.split()
             repeat_dict["start_coord2"] = split_line[-1]
             repeat_dict["end_coord2"] = split_line[0]
-        
+
         line_counter += 1
 
     if repeat_dict is not None:

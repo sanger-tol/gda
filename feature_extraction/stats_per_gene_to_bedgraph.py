@@ -2,6 +2,31 @@
 """
 Script for converting the table of stats per each gene to bedgraph
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import argparse
@@ -67,7 +92,7 @@ def output_df_to_bedgraph(output_df, assembly_title, out_folder, feature_types_d
                 selected_feature_value = str(row[selected_feature])
                 if selected_feature_value != "nan":
                     out_line = " ".join([str(row["scaff"]), str(row["segment_start_pos"]), str(row["segment_end_pos"]), selected_feature_value])
-                    f.write(out_line + "\n") 
+                    f.write(out_line + "\n")
 
 
 def process_segment(scaff_df, scaff, segment_start_pos, chunk_size, scaff_len, feature_types_dict, include_gene_strand_bias):
@@ -117,7 +142,7 @@ def main(fasta_path, input_csv_path, input_file_feature_type, out_folder, assemb
 
     output_df = pd.DataFrame(segment_means_collection)
     output_df_to_bedgraph(output_df, assembly_title, out_folder, feature_types_dict, reference_dataset_title)
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)

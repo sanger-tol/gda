@@ -2,6 +2,31 @@
 """
 Script for running LTRharvest and LTRdigest
 """
+# MIT License
+# 
+# Copyright (c) 2020-2021 Genome Research Ltd.
+# 
+# Author: Eerik Aunin (ea10@sanger.ac.uk)
+# 
+# This file is a part of the Genome Decomposition Analysis (GDA) pipeline.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import general_purpose_functions as gpf
 import argparse
@@ -25,7 +50,7 @@ def main(fasta_path, ltrharvest_folder, pipeline_output_folder, chunk_size):
     filtered_ltrdigest_gff_path = ltrharvest_folder + "/" + fasta_basename + "_ltrdigest_filtered.gff"
     ltr_retrotransposon_bedgraph_path = pipeline_output_folder + "/" + fasta_basename + "_ltrdigest_retrotransposons.bedgraph"
     ltr_protein_match_bedgraph_path = pipeline_output_folder + "/" + fasta_basename + "_ltrdigest_protein_matches.bedgraph"
-    
+
     ltrdigest_temp_folder_path = ltrharvest_folder + "/temp_files"
     gpf.run_system_command("mkdir -p " + ltrdigest_temp_folder_path)
     os.chdir(ltrdigest_temp_folder_path)
@@ -39,7 +64,7 @@ def main(fasta_path, ltrharvest_folder, pipeline_output_folder, chunk_size):
     gpf.run_system_command("gt ltrharvest -seqids -index {} -gff3 {} > {}".format(ltrharvest_folder_fasta_path, ltrharvest_gff_path, ltrharvest_stdout_path))
     gpf.run_system_command("gt gff3 -sort {} > {}".format(ltrharvest_gff_path, ltrharvest_sorted_gff_path))
     #gpf.run_system_command("export TMPDIR=\"{}\"; gt ltrdigest -hmms {}/*.hmm -aaout -outfileprefix {} -seqfile {} -matchdescstart < {} > {}".format(ltrdigest_temp_folder_path, hmms_folder, fasta_basename, ltrharvest_folder_fasta_path, ltrharvest_sorted_gff_path, ltrdigest_gff_path))
-    
+
     gpf.run_system_command("gt ltrdigest -hmms {}/*.hmm -aaout -outfileprefix {} -seqfile {} -matchdescstart < {} > {}".format(hmms_folder, fasta_basename, ltrharvest_folder_fasta_path, ltrharvest_sorted_gff_path, ltrdigest_gff_path))
 
     gpf.run_system_command("gt select -rule_files {} -- < {} > {}".format(lua_file_path, ltrdigest_gff_path, filtered_ltrdigest_gff_path))
