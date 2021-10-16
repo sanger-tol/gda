@@ -17,6 +17,7 @@ params.orthomcl_references_folder,path,Folder for reference proteomes for OrthoM
 params.diamond_memory_limit,int,"Memory limit for Diamond (in gigabytes, default: 5)",n,5,1,,
 params.diamond_sensitive,bool,Running Diamond with the --sensitive flag (default: true),n,true,,,
 params.telomeric_seq_preset,multiple_choice_string,Telomeric sequence type preset,y,vertebrates,,,vertebrates/paramecium/apicomplexan/oxytricha/arabidopsis_thaliana/cestrum_elegans/allium/zostera_marina/green_algae/insects/roundworms/saccharomyces_cerevisiae/saccharomyces_castellii/candida_glabrata/candida_albicans/candida_tropicalis/candida_maltosa/candida_guillermondii/candida_pseudotropicalis/kluyveromyces_lactis/schizosaccharomyces_pombe/dictyostelium/tetrahymena
+params.custom_telomeric_seq,string,"Optional: telomeric sequence(s) as a comma separated string, e.g. 'TTAGGGT,TTAGGGC'. If a sequence is entered here, it overrides the telomeric sequence type preset. Default: NA",n,NA,,,
 params.threads,int,Number of CPU threads,y,1,1,,
 params.rf_stranded,bool,"Boolean argument for strandedness in the mapping of RNA-Seq reads. If this flag is enabled, HISAT2 is run with --rna-strandness RF flag. Otherwise the reads are mapped as unstranded",n,false,,,
 params.wgsim_target_coverage,int,Average coverage of WGSIM simulated reads,y,10,5,,
