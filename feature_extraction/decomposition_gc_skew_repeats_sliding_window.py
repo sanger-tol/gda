@@ -112,7 +112,7 @@ def validate_custom_telomeric_seq(custom_telomeric_seq):
     """
     custom_telomeric_seq = custom_telomeric_seq.upper()
     allowed_chars = "ATGC,"
-    chars_ok_flag = all(c in allowed_chars for c in allowed_chars)
+    chars_ok_flag = all(c in allowed_chars for c in custom_telomeric_seq)
     if chars_ok_flag == False:
         sys.stderr.write("Invalid characters found in the custom telomeric sequence provided by the user: " + custom_telomeric_seq + "\n")
         sys.exit(1)
@@ -121,7 +121,7 @@ def validate_custom_telomeric_seq(custom_telomeric_seq):
 def main(in_path, out_folder, pipeline_output_folder, chunk_size, min_repeat_unit_count, telomeric_seq_preset, custom_telomeric_seq):
 
     telomeric_seq = None
-    if custom_telomeric_seq is not None:
+    if custom_telomeric_seq != "NA":
         validate_custom_telomeric_seq(custom_telomeric_seq)
         telomeric_seq = custom_telomeric_seq.split(",")
     else:
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     parser.add_argument("--chunk_size", type=int, help="Sliding window step size (bp), default: 5000", default=5000)
     parser.add_argument("--min_repeat_unit_count", type=int, help="Minimum number of repeat units in repeats", default=3)
     parser.add_argument("--telomeric_seq_preset", type=str, help="Telomeric sequence type preset (default: vertebrates)", default="vertebrates", choices=["vertebrates", "paramecium", "apicomplexan", "oxytricha", "arabidopsis_thaliana", "cestrum_elegans", "allium", "zostera_marina", "green_algae", "insects", "roundworms", "saccharomyces_cerevisiae", "saccharomyces_castellii", "candida_glabrata", "candida_albicans", "candida_tropicalis", "candida_maltosa", "candida_guillermondii", "candida_pseudotropicalis", "kluyveromyces_lactis", "schizosaccharomyces_pombe", "dictyostelium" "tetrahymena"])
-    parser.add_argument("--custom_telomeric_seq", type=str, help="Optional: telomeric sequence(s) as a comma separated string, e.g. 'TTAGGGT,TTAGGGC'. If a sequence is entered here, it overrides the telomeric sequence type preset. Default: None", default=None)
+    parser.add_argument("--custom_telomeric_seq", type=str, help="Optional: telomeric sequence(s) as a comma separated string, e.g. 'TTAGGGT,TTAGGGC'. If a sequence is entered here, it overrides the telomeric sequence type preset. Default: NA", default="NA")
     args = parser.parse_args()
     main(args.in_path, args.out_folder, args.pipeline_output_folder, args.chunk_size, args.min_repeat_unit_count, args.telomeric_seq_preset, args.custom_telomeric_seq)
 

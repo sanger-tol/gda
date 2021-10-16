@@ -36,6 +36,7 @@ sys.path.insert(1, feature_extraction_scripts_path)
 import general_purpose_functions as gpf
 from datetime import datetime
 from shutil import which
+from decomposition_gc_skew_repeats_sliding_window import validate_custom_telomeric_seq
 
 
 def assign_pipeline_run_folder_name():
@@ -183,6 +184,9 @@ def extract_genomic_features(args):
     timestamp_str = datetime.now().strftime("%d-%b-%Y (%H:%M)")
     version_file_path = feature_extraction_scripts_path + "/version.dat"
     version_nr = gpf.l(version_file_path)[0]
+
+    if args.custom_telomeric_seq != "NA":
+        validate_custom_telomeric_seq(args.custom_telomeric_seq)
 
     if args.run_gene_annotation_pipeline == True and args.augustus_species == "NA":
         sys.stderr.write("Cannot start the gene annotation pipeline because no species model for Augustus has been selected. The species model for Augustus can be selected using the --augustus_species option\n")
@@ -355,6 +359,7 @@ def main():
     parser_extract_genomic_features.add_argument("--diamond_not_sensitive", dest="diamond_not_sensitive", action="store_true", help="Running Diamond for OrthoMCL without the --sensitive flag (default: False)")
     parser_extract_genomic_features.set_defaults(diamond_not_sensitive=False)
     parser_extract_genomic_features.add_argument("--telomeric_seq_preset", type=str, help="Telomeric sequence type preset (default: vertebrates)", default="vertebrates", choices=["vertebrates", "paramecium", "apicomplexan", "oxytricha", "arabidopsis_thaliana", "cestrum_elegans", "allium", "zostera_marina", "green_algae", "insects", "roundworms", "saccharomyces_cerevisiae", "saccharomyces_castellii", "candida_glabrata", "candida_albicans", "candida_tropicalis", "candida_maltosa", "candida_guillermondii", "candida_pseudotropicalis", "kluyveromyces_lactis", "schizosaccharomyces_pombe", "dictyostelium" "tetrahymena"])
+    parser_extract_genomic_features.add_argument("--custom_telomeric_seq", type=str, help="Optional: telomeric sequence(s) as a comma separated string, e.g. 'TTAGGGT,TTAGGGC'. If a sequence is entered here, it overrides the telomeric sequence type preset. Default: NA", default="NA")
     parser_extract_genomic_features.add_argument("--rf_stranded", dest="rf_stranded", action="store_true", help="Boolean argument for strandedness in the mapping of RNA-Seq reads. If this flag is enabled, HISAT2 is run with --rna-strandness RF flag. Otherwise the reads are mapped as unstranded")
     parser_extract_genomic_features.add_argument("--wgsim_target_coverage", type=int, help="Average coverage of WGSIM simulated reads (default: 10)", default=10)
     parser_extract_genomic_features.add_argument("--custom_gff_tags", type=str, help="Optional: comma separated string of custom tags for features to extract from the annotations GFF (example: five_prime_UTR,three_prime_UTR,miRNA)", default="")
