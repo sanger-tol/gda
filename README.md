@@ -82,19 +82,21 @@ If the conda installation does not work for you, you can try using the GDA singu
 
 `gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
 
-  * Cluster genome windows and analyse clusters (this should take ~1 minute; n.b. optimised clustering parameters are provided here)
+  * Cluster genome windows and analyse clusters (Use 1 thread and 10Gb memory; this should take ~1 minute; n.b. optimised clustering parameters are provided here)
 
 **Either** Plain command
+
 `gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
 
 **Or** by submission to LSF
+
 `bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_clustering_test.o -e gda_clustering_test.e "gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"`
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The clustering output will be in a folder called: `gda_out`
 
 **3. Install dependencies on your local machine**
 
-MOVE TO YOUR LOCAL MACHINE (e.g. Sanger laptop)
+MOVE TO YOUR LOCAL MACHINE (e.g. your desktop/laptop)
 
   * Set up environment
 
@@ -121,10 +123,10 @@ conda install --yes -c r -c conda-forge r-shiny=1.5.0 r-ggplot2=3.2.1 r-gplots=3
 
 ```
 
-  * Copy the data to your local machine e.g.
-`scp -r farm5-login:<path>/gda_out/ .`
+  * Copy the data from the remote machine to your local machine (while on you local machine) e.g.
+`scp -r <user>@<remote_machine>:<path>/gda_out/ .`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order to use scp to copy the files, you have to be connected to the Sanger VPN.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order to use scp to copy the files, you will need to be able to see the remote machine (perhaps via VPN).
 
 **4. View results**
 
@@ -356,7 +358,7 @@ By default the clustering will be run with “N neighbours” set to 5, 10, 15, 
 
 `firefox gda_out/parameter_selection/parameters.html &`
 
-[warning this can run slowly on the Sanger farm when run remotely]
+[warning this can run slowly when run remotely]
 
 We recommend selecting parameters based on minimising the percentage of unclassified sequence, while getting at least two clusters. E.g.:
 
