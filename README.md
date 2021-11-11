@@ -84,10 +84,10 @@ If the conda installation does not work for you, you can try using the GDA singu
 
   * Cluster genome windows and analyse clusters (this should take ~1 minute; n.b. optimised clustering parameters are provided here)
 
-Plain command
-gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv
+**Either** Plain command
+`gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
 
-LSF submission example
+**Or** by submission to LSF
 `bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_clustering_test.o -e gda_clustering_test.e "gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"`
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The clustering output will be in a folder called: `gda_out`
