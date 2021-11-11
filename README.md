@@ -22,16 +22,16 @@ GDA software consists of three main parts: a genomic feature extraction pipeline
   * Conda
   * Nextflow
   * Python3 
-  * Java – with enough memory to initialise the Java virtual machine (on the Sanger farm, Java needs to be run on a compute node because the login nodes do not have enough available memory)
+  * Java – with enough memory to initialise the Java virtual machine
   * Git
 
 The Shiny app for viewing clustering results requires R and a number of R libraries. It has been tested on MacOS and Kubuntu Linux.
 
 ### Notes
 
-We expect that the GDA feature extraction and analysis pipeline is run remotely (e.g. via Sanger farm5-login). Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
+We expect that the GDA feature extraction and analysis pipeline is run remotely on a compute cluster. Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
 
-The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (Plasmodium falciparum genome assembly) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
+The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (*Plasmodium falciparum* genome assembly) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
 
 ## Tutorial
 
@@ -52,7 +52,7 @@ The quick start tutorial will show you how to run the GDA pipeline end-to-end wi
 
 **1. Set up a GDA conda environment on the farm (need to install conda? – https://docs.conda.io/en/latest/miniconda.html)**
 
-  * Clone the GitLab repository (you may need a password for this - try your normal Sanger details)
+  * Clone the GitLab repository
 
 `git clone https://github.com/eeaunin/gda.git`
 
@@ -68,9 +68,11 @@ If the conda installation does not work for you, you can try using the GDA singu
 
 **2. Run GDA**
 
-  * Run GDA’s feature extraction pipeline with test data (must be bsubbed on Sanger farm for Nextflow to work; expect it to take ~15 minutes with the test data):
+  * Run GDA’s feature extraction pipeline with test data (we suggest that you submit this to your cluster as a job; expect it to take ~15 minutes with the test data):
 
-`bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"`
+`gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta`
+
+*`bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"`*
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The results will be in the folder: `gda_pipeline_run`. The output file required for clustering is:
 
