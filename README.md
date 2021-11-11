@@ -70,10 +70,12 @@ If the conda installation does not work for you, you can try using the GDA singu
 
   * Run GDA’s feature extraction pipeline with test data (we suggest that you submit this to your cluster as a job with 12 threads and 10Gb memory; expect it to take ~15 minutes with the test data):
 
-Plain command
+**Either** Plain command
+
 `gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta`
 
-LSF submission example
+**Or** by submission to LSF
+
 `bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"`
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The results will be in the folder: `gda_pipeline_run`. The output file required for clustering is:
