@@ -106,11 +106,15 @@ MOVE TO YOUR LOCAL MACHINE (e.g. your desktop/laptop)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you have an R installation on your local machine that is not conda-based, the following R script should install the required libraries:
 
+```
+git clone https://github.com/eeaunin/gda.git
+```
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`gda/gda_shiny/install_gda_shiny_dependencies_without_conda.R`
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alternatively, the following commands can be used to install a custom conda R environment for the GDA Shiny app:
 ```
-git clone https://gitlab.internal.sanger.ac.uk/ar11/gda.git
+git clone https://github.com/eeaunin/gda.git
 
 # update conda to v4.10.1
 conda update -n base conda
