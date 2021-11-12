@@ -137,7 +137,7 @@ conda install --yes -c r -c conda-forge r-shiny=1.5.0 r-ggplot2=3.2.1 r-gplots=3
 The required argument for the gda_shiny.py script is a path to a gda_out folder (that comes from the output of gda_clustering.py and which you just copied from the farm). 
 
 ```
-python3 ../../gda/gda_shiny/gda_shiny.py gda_out
+python3 gda/gda_shiny/gda_shiny.py gda_out
 ```
 
 ### Understanding the results tabs
