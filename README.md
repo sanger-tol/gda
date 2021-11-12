@@ -174,7 +174,7 @@ https://software.broadinstitute.org/software/igv/download
 
 **2. Get bedgraph files from farm**
 
-`scp -r farm5-login:<path>/bedgraph_output/ .`
+`scp -r farm5-login:<path>/gda_pipeline_run/bedgraph_output/ .`
 
 **3. Copy across clustering results (if you haven’t already)**
 
