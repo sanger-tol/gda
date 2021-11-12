@@ -108,9 +108,9 @@ MOVE TO YOUR LOCAL MACHINE (e.g. your desktop/laptop)
 
 ```
 git clone https://github.com/eeaunin/gda.git
-```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`gda/gda_shiny/install_gda_shiny_dependencies_without_conda.R`
+gda/gda_shiny/install_gda_shiny_dependencies_without_conda.R
+```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alternatively, the following commands can be used to install a custom conda R environment for the GDA Shiny app:
 ```
