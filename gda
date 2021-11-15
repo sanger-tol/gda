@@ -155,6 +155,7 @@ def write_nextflow_config_file(args, out_path):
             f.write("// Singularity bind paths\n")
             f.write("singularity.runOptions = \"--bind {}\"\n".format(",".join(input_file_folders)))
         f.write("\ntrace {\nenabled = true\nfields = 'process,task_id,hash,name,attempt,status,exit,realtime,%cpu,vmem,rss,submit,start,complete,duration,realtime,rchar,wchar'\nfile = \"nextflow_trace.txt\"\n}\n")
+        f.write("\nenv {\n  PYTHONNOUSERSITE = 1\n}\n")
     sys.stderr.write("Wrote a config file for Nextflow to the following path: {}\n".format(out_path))
 
 
