@@ -172,13 +172,13 @@ This tab contains a heatmap which clusters chromosomes by their cluster composit
 
 https://software.broadinstitute.org/software/igv/download
 
-**2. Get bedgraph files from farm**
+**2. Get bedgraph files from cluster**
 
-`scp -r farm5-login:<path>/gda_pipeline_run/bedgraph_output/ .`
+`scp -r <remote_machine>:<path>/gda_pipeline_run/bedgraph_output/ .`
 
 **3. Copy across clustering results (if you haven’t already)**
 
-`scp -r farm5-login:<path>/gda_out/ .`
+`scp -r <remote_machine>:<path>/gda_out/ .`
 
 **4. Make IGV session file**
 
@@ -227,6 +227,15 @@ In addition, a bedgraph file of the sum of complex repeat families (and if using
 ```
 
 e.g.
+ 
+Plain command
+ 
+```
+gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
+```
+ 
+By submission to LSF
+ 
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_repeatmodeler_test.o -e gda_repeatmodeler_test.e "gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 ```
@@ -244,6 +253,14 @@ Multiple options are required
 
 e.g.
 
+Plain command
+
+```
+gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
+```
+
+By submission to LSF
+ 
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_aug.o -e gda_test_aug.e "gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 
@@ -285,7 +302,16 @@ e.g.
 ```
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_1.fastq.gz .
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_2.fastq.gz .
+```
 
+Plain command
+```
+gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
+``` 
+ 
+By submission to LSF
+ 
+```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 ```
 
@@ -306,8 +332,14 @@ Proteins from the genome under consideration will be added behind the scenes (th
 
 e.g.
 
+Plain command
+```
+gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
+By submission to LSF
+
+```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_orthomcl.o -e gda_test_orthomcl.e "gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 ```
 
@@ -355,6 +387,12 @@ If you started with a 5kb window size, use 4 as the downsampling factor and you 
 
 Once the feature extraction pipeline is finished, you can determine good clustering parameters by looking at the UMAP plots from a range of different parameters:
 
+Plain command
+
+`gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
+
+By submission to LSF
+ 
 `bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"`
 
 n_neighbors is a UMAP setting that determines the size of the local neigbourhood in terms of sample points (https://umap-learn.readthedocs.io/en/latest/parameters.html). Smaller n_neigbors values give more emphasis on local structure in the data and larger n_neighbors values give more weight to global structure. We have used n_neighbors values from 5 to 200.
@@ -437,7 +475,13 @@ On the Sanger farm, Singularity can be started from the farm module:
 
 If you wish to use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. This is an example command for extracting genomic features using Singularity:
 
-`bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path /lustre/scratch118/infgen/team133/ea10/gda_singularity_image/gda_singularity.simg"`
+Plain command
+ 
+`gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>`
+ 
+By submission to LSF
+ 
+`bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>"`
 
 You can also run the `gda_clustering_params` and `gda_clustering` commands with the Singularity image by providing a path to the image with the `--singularity_image_path` option.
 
@@ -448,7 +492,7 @@ You can also run the `gda_clustering_params` and `gda_clustering` commands with 
 •	You may want to exclude the mitochondrial and other symbiont genomes as well as any shorter, non-chromosomal scaffolds
 •	If your genome assembly is large and clustering is problematic you may want to increase window size. You can do this with an existing merged tsv file using ‘gda 
 
-Bugs, suggestions etc. can be sent to ea10@sanger.ac.uk and ar11@sanger.ac.uk, or submitted as issues on the GitLab page: https://gitlab.internal.sanger.ac.uk/ar11/gda/-/issues
+Bugs, suggestions etc. can be sent to ea10@sanger.ac.uk and ajr236@cam.ac.uk, or submitted as issues on the GitLab page: https://gitlab.internal.sanger.ac.uk/ar11/gda/-/issues
 
 ### Ideas for analysis
 
