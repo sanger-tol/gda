@@ -8,6 +8,10 @@ GDA (Genome Decomposition Analysis) is a bioinformatic pipeline to analyse genom
 
 GDA is developed by Eerik Aunin (ea10@sanger.ac.uk) and Adam Reid (ajr236@cam.ac.uk)
 
+A manuscript describing GDA is available from bioRxiv: XXXXXXXX
+
+Complete analyses presented in the manuscript are available here: XXXXXXXXX
+
 Below is a diagram of the components of the pipeline.
 
 
@@ -228,13 +232,13 @@ In addition, a bedgraph file of the sum of complex repeat families (and if using
 
 e.g.
  
-Plain command
+**Either** Plain command
  
 ```
 gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
  
-By submission to LSF
+**Or** By submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_repeatmodeler_test.o -e gda_repeatmodeler_test.e "gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -253,13 +257,13 @@ Multiple options are required
 
 e.g.
 
-Plain command
+**Either** Plain command
 
 ```
 gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
-By submission to LSF
+**Or** By submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_aug.o -e gda_test_aug.e "gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -304,12 +308,12 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_1.fastq
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_2.fastq.gz .
 ```
 
-Plain command
+**Either** Plain command
 ```
 gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ``` 
  
-By submission to LSF
+**Or** By submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -332,12 +336,12 @@ Proteins from the genome under consideration will be added behind the scenes (th
 
 e.g.
 
-Plain command
+**Either** Plain command
 ```
 gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
-By submission to LSF
+**Or** By submission to LSF
 
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_orthomcl.o -e gda_test_orthomcl.e "gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -387,11 +391,11 @@ If you started with a 5kb window size, use 4 as the downsampling factor and you 
 
 Once the feature extraction pipeline is finished, you can determine good clustering parameters by looking at the UMAP plots from a range of different parameters:
 
-Plain command
+**Either** Plain command
 
 `gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
 
-By submission to LSF
+**Or** By submission to LSF
  
 `bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"`
 
@@ -468,18 +472,20 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at `/lustre/scratch118/infgen/team133/ea10/gda_singularity_image/gda_singularity.simg`.
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at **XXXXXXXXXX**.
 On the Sanger farm, Singularity can be started from the farm module:
 
 `module load ISG/singularity/3.6.4`
 
+You will need to make sure Singularity is installed on your cluster.
+ 
 If you wish to use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. This is an example command for extracting genomic features using Singularity:
 
-Plain command
+**Either** Plain command
  
 `gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>`
  
-By submission to LSF
+**Or** By submission to LSF
  
 `bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>"`
 
