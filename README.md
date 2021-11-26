@@ -10,7 +10,7 @@ GDA is developed by Eerik Aunin (ea10@sanger.ac.uk) and Adam Reid (ajr236@cam.ac
 
 A manuscript describing GDA is available from bioRxiv: XXXXXXXX
 
-Complete analyses presented in the manuscript are available here: XXXXXXXXX
+Complete analyses presented in the manuscript are available here: https://drive.google.com/drive/folders/1XSNS_Jj0_UGxPXpzY-EwbzABGxaZgfRf?usp=sharing
 
 Below is a diagram of the components of the pipeline.
 
@@ -472,14 +472,13 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at **XXXXXXXXXX**.
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at **https://drive.google.com/drive/folders/1XSNS_Jj0_UGxPXpzY-EwbzABGxaZgfRf?usp=sharing**.
 On the Sanger farm, Singularity can be started from the farm module:
 
 `module load ISG/singularity/3.6.4`
 
-You will need to make sure Singularity is installed on your cluster.
- 
-If you wish to use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. This is an example command for extracting genomic features using Singularity:
+You will need to make sure Singularity and Nextflow are installed on your cluster.
+For running GDA with the Singularity image, you should still clone this GitHub repository and add the `gda` wrapper script to `PATH`. To use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. The remaining software dependencies (RepeatModeler, HISAT2, LTRharvest, etc) will then be loaded from the Singularity image. This is an example command for extracting genomic features using Singularity:
 
 **Either** Plain command
  
@@ -498,7 +497,7 @@ You can also run the `gda_clustering_params` and `gda_clustering` commands with 
 •	You may want to exclude the mitochondrial and other symbiont genomes as well as any shorter, non-chromosomal scaffolds
 •	If your genome assembly is large and clustering is problematic you may want to increase window size. You can do this with an existing merged tsv file using ‘gda 
 
-Bugs, suggestions etc. can be sent to ea10@sanger.ac.uk and ajr236@cam.ac.uk, or submitted as issues on the GitLab page: https://gitlab.internal.sanger.ac.uk/ar11/gda/-/issues
+Bugs, suggestions etc. can be sent to ea10@sanger.ac.uk and ajr236@cam.ac.uk, or submitted as issues on this GitHub page.
 
 ### Ideas for analysis
 
