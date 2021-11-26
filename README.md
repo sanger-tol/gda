@@ -472,8 +472,11 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at **https://drive.google.com/drive/folders/1XSNS_Jj0_UGxPXpzY-EwbzABGxaZgfRf?usp=sharing**.
-On the Sanger farm, Singularity can be started from the farm module:
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited at **https://drive.google.com/file/d/1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL/view?usp=sharing**.
+If you have `gdown` (https://github.com/wkentaro/gdown, https://anaconda.org/conda-forge/gdown) installed on your system, you can download the Singularity image file from Google Drive with a terminal command:
+`gdown https://drive.google.com/uc?id=1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL`
+ 
+ On the Sanger farm, Singularity can be started from the farm module:
 
 `module load ISG/singularity/3.6.4`
 
@@ -494,8 +497,10 @@ You can also run the `gda_clustering_params` and `gda_clustering` commands with 
 ### Troubleshooting
 
 •	The best place to look for error messages initially is STDOUT, rather than STDERR, because the Nextflow error messages end up there. You may then be directed to the error_stream_logs directory in your run folder for error messages from a specific process
+ 
 •	You may want to exclude the mitochondrial and other symbiont genomes as well as any shorter, non-chromosomal scaffolds
-•	If your genome assembly is large and clustering is problematic you may want to increase window size. You can do this with an existing merged tsv file using ‘gda 
+ 
+•	If your genome assembly is large and clustering is problematic you may want to increase window size. You can do this with an existing merged TSV file using `gda downsample_merged_tsv <path to the TSV file> <downsampling factor>`
 
 Bugs, suggestions etc. can be sent to ea10@sanger.ac.uk and ajr236@cam.ac.uk, or submitted as issues on this GitHub page.
 
