@@ -276,9 +276,9 @@ bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o 
 `--gff_path <GFF3 file with existing gene annotations>`
 
 For handling user-provided GFF files, the pipeline expects the following things:
-  *the input file is in GFF3 format (GTF or GFF2 are not accepted)
-  *the tags for mRNA, pseudogene, tRNA and rRNA features are "mRNA", "pseudogene", "tRNA" and "rRNA". The user should check the GFF file to make sure that the tags are named according to this convention. If, for instance, the mRNA features in the GFF file are called "transcript" instead of "mRNA", the pipeline does not recognise them as the mRNA features.
-  *the GFF file should pass the GenomeTools GFF3 validator check (http://genometools.org/cgi-bin/gff3validator.cgi).
+- the input file is in GFF3 format (GTF or GFF2 are not accepted)
+- the tags for mRNA, pseudogene, tRNA and rRNA features are "mRNA", "pseudogene", "tRNA" and "rRNA". The user should check the GFF file to make sure that the tags are named according to this convention. If, for instance, the mRNA features in the GFF file are called "transcript" instead of "mRNA", the pipeline does not recognise them as the mRNA features.
+- the GFF file should pass the [GenomeTools GFF3 validator check](http://genometools.org/cgi-bin/gff3validator.cgi).
 
 The user can specify non-standard GFF3 feature tags from the input GFF3 file to be turned into bedgraph tracks using the `--custom_gff_tags` option of the `gda` wrapper. For example, if the input GFF3 file has features named "H3K9me3" and "H3K9ac", it is possible to make bedgraph files out of them by specifying them as comma separated `custom_gff_tags` options:
 
