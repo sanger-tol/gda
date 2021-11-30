@@ -394,12 +394,14 @@ If the genomic feature extraction pipeline produces an output TSV file that has 
 Once the feature extraction pipeline is finished, you can determine good clustering parameters by looking at the UMAP plots from a range of different parameters:
 
 **Either** Plain command
-
-`gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv`
+```
+gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv
+```
 
 **Or** By submission to LSF
- 
-`bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"`
+``` 
+bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"
+```
 
 `n_neighbors` is a UMAP setting that determines the size of the local neigbourhood in terms of sample points (https://umap-learn.readthedocs.io/en/latest/parameters.html). Smaller `n_neigbors` values give more emphasis on local structure in the data and larger `n_neighbors` values give more weight to global structure. We have used `n_neighbors` values from 5 to 200.
 By default the clustering will be run with `n_neighbors` set to 5, 10, 15, 20, 50, 100 and “Minimum cluster size” set to 50, 100, 200, 500. All parameter pairs will be explored (e.g. 24 combinations). The results of each clustering are output to STDOUT. You can also view an HTML file of UMAP plots in a web browser e.g.:
@@ -488,12 +490,14 @@ You will need to make sure Singularity and Nextflow are installed on your cluste
 For running GDA with the Singularity image, you should still clone this GitHub repository and add the `gda` wrapper script to `PATH`. To use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. The remaining software dependencies (RepeatModeler, HISAT2, LTRharvest, etc) will then be loaded from the Singularity image. This is an example command for extracting genomic features using Singularity:
 
 **Either** Plain command
- 
-`gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>`
+``` 
+gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>
+```
  
 **Or** By submission to LSF
- 
-`bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>"`
+``` 
+bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>"
+```
 
 You can also run the `gda_clustering_params` and `gda_clustering` commands with the Singularity image by providing a path to the image with the `--singularity_image_path` option.
 
