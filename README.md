@@ -407,6 +407,7 @@ gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-4
 ``` 
 bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"
 ```
+Replace the `20210312_gda_pipeline_run` in the above command with the name of your GDA pipeline run folder path. 
 
 `n_neighbors` is a UMAP setting that determines the size of the local neigbourhood in terms of sample points (https://umap-learn.readthedocs.io/en/latest/parameters.html). Smaller `n_neigbors` values give more emphasis on local structure in the data and larger `n_neighbors` values give more weight to global structure. We have used `n_neighbors` values from 5 to 200.
 By default the clustering will be run with `n_neighbors` set to 5, 10, 15, 20, 50, 100 and “Minimum cluster size” set to 50, 100, 200, 500. All parameter pairs will be explored (e.g. 24 combinations). The results of each clustering are output to STDOUT. You can also view an HTML file of UMAP plots in a web browser e.g.:
