@@ -35,7 +35,7 @@ The Shiny app for viewing clustering results requires R and a number of R librar
 
 We expect that the GDA feature extraction and analysis pipeline is run remotely on a compute cluster. Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
 
-The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (*Plasmodium falciparum* genome assembly) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
+The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (*Plasmodium falciparum* genome assembly [obtained from PlasmoDB](https://plasmodb.org/common/downloads/release-49/Pfalciparum3D7/fasta/data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta)) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
 
 ## Tutorial
 
