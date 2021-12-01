@@ -41,7 +41,7 @@ import spectra
 import numpy as np
 from matplotlib.colors import ListedColormap
 
-from gda_clustering import get_palette, run_umap, run_hdbscan
+from gda_clustering import get_palette, run_umap, run_hdbscan, check_umap_version
 from sklearn import metrics
 
 # Ignore NUMBA warnings related to running UMAP
@@ -185,12 +185,15 @@ def export_metrics_table(metrics_dict, outdir_full):
     metrics_df = metrics_df.sort_values(["silhouette_score", "unclassified_percentage", "davies_bouldin_index", "calinski_harabasz_score"], ascending=[False, True, True, False])
     metrics_outfile = outdir_full + "/clustering_metrics.csv"
     metrics_df.to_csv(metrics_outfile, index=True)
+    
 
 
 def main(args):
     #################
     # Procedural code
     #################
+    
+    check_umap_version()
 
     neighbours_list = get_neighbours_list(args.n_neighbors)
     cluster_size_list = get_cluster_size_list(args.cluster_size_cutoff)

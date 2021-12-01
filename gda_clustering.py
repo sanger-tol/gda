@@ -272,10 +272,19 @@ def write_circos_json(json_dict, outfile, outdir):
         file.write(json.dumps(json_dict))
 
 
+def check_umap_version():
+    '''Check UMAP version and print a warning if it is not what is expected. UMAP crashes if it's a version that is too old (e.g. 0.4.2)'''
+    installed_umap_version = umap.__version__
+    expected_umap_version = "0.4.6"
+    if umap.__version__ != expected_umap_version:
+        sys.stderr.write("Warning: UMAP version appears to be different from what is expected for the GDA pipeline (the installed version is {} but the expected version is {})\n".format(installed_umap_version, expected_umap_version))
+
+
 def main(umap_n_neighbors, hdbscan_min_cluster_size, pvalue_cutoff, cluster_position_histogram_window_number, outdir, tracks_file):
     #################
     # Procedural code
     #################
+    check_umap_version()
 
     sys.stderr.write('\t'.join([str(umap_n_neighbors), str(hdbscan_min_cluster_size), str(pvalue_cutoff), tracks_file]))
     sys.stderr.write('\n')
