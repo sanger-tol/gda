@@ -73,14 +73,14 @@ def kmer_likelihood(kmer_seq, nucleotide_likelihoods):
 
 
 def main(fasta_path, chunk_size, kmer_size):
-    fasta_basename_with_extension = fasta_path.split("/")[-1]
-    fasta_basename = fasta_basename_with_extension.split(".")[0]
-    assembly_title = fasta_basename
+    #fasta_basename_with_extension = fasta_path.split("/")[-1]
+    #fasta_basename = fasta_basename_with_extension.split(".")[0]
+    #assembly_title = fasta_basename
 
     fasta_data = gpf.read_fasta_in_chunks(fasta_path)
     kmers_dict = generate_empty_kmers_dict([kmer_size])
 
-    feature_title = assembly_title + "_kmer_deviation_kmer_size_" + str(kmer_size)
+    feature_title = "kmer_deviation_kmer_size_" + str(kmer_size)
     bedgraph_header = 'track type=bedGraph name="' + feature_title + '" description="' + feature_title + '" visibility=full color=0,0,255 altColor=0,100,200 priority=20'
     print(bedgraph_header)
 

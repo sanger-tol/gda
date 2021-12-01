@@ -19,6 +19,9 @@ Below is a diagram of the components of the pipeline.
 
 (A) Features sets are derived from the genome reference sequence (seq), repeat finding (rep), gene annotations (gene) and evolutionary relationships between genes (orth). Values for each feature are determined for each non-overlapping window of e.g. 5kb across the genome. (B) The resulting matrix of feature values per window is embedded in two dimensions and clustered to identify groups of windows with similar properties. (C) The data can be explored in a number of ways using a web-browser based app. The clustering labels are mapped back to the chromosomes to highlight architectural features and a heatmap displays the features which define the clusters.  
 
+
+A more detailed diagram of the components of the pipeline in the form of a flowchart can be seen [here](images/gda_pipeline_flowchart.png)
+
 ### Requirements
 
 GDA software consists of three main parts: a genomic feature extraction pipeline, clustering scripts, and a Shiny app for viewing the results. The genomic feature extraction pipeline and the clustering scripts have been tested on a Linux server (Sanger farm) and have the following requirements:
@@ -74,7 +77,7 @@ If the conda installation does not work for you, you can try using the GDA singu
 
   * Run GDA’s feature extraction pipeline with test data (we suggest that you submit this to your cluster as a job with 12 threads and 10Gb memory; expect it to take ~15 minutes with the test data):
 
-**Either** Plain command
+**Either** plain command
 ```
 gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
@@ -90,7 +93,7 @@ bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o 
 
   * Cluster genome windows and analyse clusters (Use 1 thread and 10Gb memory; this should take ~1 minute; n.b. optimised clustering parameters are provided here)
 
-**Either** Plain command
+**Either** plain command
 
 ```
 gda clustering -c 100 -n 5 gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv
@@ -152,28 +155,39 @@ python3 gda/gda_shiny/gda_shiny.py gda_out
 ### Understanding the results tabs
 
 **UMAP plot**
+![](images/01_gda_shiny_umap.png)
 
 This shows you how well the clustering worked.  Each point in the plot represents a genomic window. Windows are coloured by cluster. Cluster -1 (grey) is used for unclustered windows. Based on the nature of the genome, the features used, the window size and other parameters, there may, for example, be several very distinct, tight clusters, or perhaps a single diffuse cloud of points. Distinct, tight clusters suggest that GDA has identified regions of the genome which are clearly similar to each other and distinct from other regions. A single diffuse cloud means that there were not strong similarities or differences between subsets of the windows. There might be a lot of the genome which is unclassified (grey) or it might all be included in clusters. Sliders can be used to adjust plots for better viewing and PNG or SVG images can be saved.
 
 **Cluster locations**
+![](images/02_gda_shiny_raster_plot.png)
 
 Each chromosome/scaffold/contig is shown, with each window coloured based on the clustering. Therefore, this shows how the clusters pattern the chromosomes and, for example, whether a particular cluster tends to be found at the end of chromosomes. Do all chromosomes have a similar pattern? Do sex chromosomes, B chromosomes etc. look distinct from the autosomes?
 
 **Cluster heatmaps**
+![](images/03_gda_shiny_cluster_heatmaps)
 
 GDA determines features which have high or low values for windows in a particular cluster compared to other clusters. The heatmap in this tab shows the relative values across clusters for each significantly variable feature. Green means a feature has a relatively high value in a particular cluster, red a relatively low value. You can find the exact values and which were significantly different in the “Feature tables” tab. Adjusting the plot height and the label size can be particularly useful in this tab so that the heatmap is legible.
 
 **Feature tables**
+![](images/04_gda_shiny_feature_tables.png)
 
 This tab has a table for each cluster (and unclustered windows), describing which features have significantly higher or lower values (by the Kolmogorov-Smirnov test). The default p-value cutoff for the Kolmogorov-Smirnov test is 1e-20.
 
 **Cluster positions across chromosomes**
+![](images/05_gda_shiny_cluster_positions_across_chromosomes.png)
 
 This tab shows where each cluster tends to occur across the sequences. It helps you to see whether a cluster tends to occur at the ends or in the middles of chromosomes for instance.
 
 **Chromosome cluster composition**
+![](images/06_gda_shiny_chromosome_cluster_composition.png)
 
 This tab contains a heatmap which clusters chromosomes by their cluster composition. Chromosomes which have similar proportions of each cluster will be closer together in the heatmap. This helps in identifying outliers which might represent interesting sequences such as sex chromosomes, B chromosomes etc.
+
+**Cluster junction counts**
+![](images/07_gda_shiny_cluster_junction_counts.png)
+
+This tab shows the observed counts of junctions between windows belonging to each UMAP+HDBSCAN cluster. Junctions between windows belonging to the same type of cluster are included in the counts. The observed counts are compared with counts expected if windows were distributed randomly. Junctions with counts that are significantly different from what is expected by chance (based on Fisher test) are shown in bold+italics.
 
 ### View clusters and significant tracks in IGV
 
@@ -198,6 +212,9 @@ gda/gda_make_igv_session_file.py -g gda/test_data/PlasmoDB-49_Pfalciparum3D7.gff
 **5. Load session file into IGV**
 
 File →“Open Session”
+
+![](images/gda_pfalciparum_igv_screensh.png)
+The IGV screenshot shows _Plasmodium falciparum_ chromosome 1, with some GDA bedgraph tracks and the 'clusters.bed' file loaded.
 
 ### Understanding the output files
 
@@ -237,13 +254,13 @@ In addition, a bedgraph file of the sum of complex repeat families (and if using
 
 e.g.
  
-**Either** Plain command
+**Either** plain command
  
 ```
 gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
  
-**Or** By submission to LSF
+**Or** by submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_repeatmodeler_test.o -e gda_repeatmodeler_test.e "gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -262,13 +279,13 @@ Multiple options are required
 
 e.g.
 
-**Either** Plain command
+**Either** plain command
 
 ```
 gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
-**Or** By submission to LSF
+**Or** by submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_aug.o -e gda_test_aug.e "gda extract_genomic_features --threads 12 --pipeline_run_folder aug_test_runfolder --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -313,12 +330,12 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_1.fastq
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/008/ERR2234508/ERR2234508_2.fastq.gz .
 ```
 
-**Either** Plain command
+**Either** plain command
 ```
 gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ``` 
  
-**Or** By submission to LSF
+**Or** by submission to LSF
  
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --rna_seq_fastq_1_path ERR2234508_1.fastq.gz --rna_seq_fastq_2_path ERR2234508_2.fastq.gz gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -341,12 +358,12 @@ Proteins from the genome under consideration will be added behind the scenes (th
 
 e.g.
 
-**Either** Plain command
+**Either** plain command
 ```
 gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
-**Or** By submission to LSF
+**Or** by submission to LSF
 
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test_orthomcl.o -e gda_test_orthomcl.e "gda extract_genomic_features --threads 12 --pipeline_run_folder orthomcl_test_runfolder --orthomcl_references_folder gda/test_data/orthomcl_refs/ --run_gene_annotation_pipeline --annotation_target_species_id PFALTEST --augustus_species pfalciparum gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
@@ -398,12 +415,12 @@ If the genomic feature extraction pipeline produces an output TSV file that has 
 
 Once the feature extraction pipeline is finished, you can determine good clustering parameters by looking at the UMAP plots from a range of different parameters:
 
-**Either** Plain command
+**Either** plain command
 ```
 gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv
 ```
 
-**Or** By submission to LSF
+**Or** by submission to LSF
 ``` 
 bsub -n1 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_params_test.o -e gda_params_test.e "gda clustering_params 20210312_gda_pipeline_run/merged_bedgraph_table/PlasmoDB-49_Pfalciparum3D7_Genome_merged_bedgraph.tsv"
 ```
@@ -415,6 +432,8 @@ By default the clustering will be run with `n_neighbors` set to 5, 10, 15, 20, 5
 `firefox gda_out/parameter_selection/parameters.html &`
 
 [warning this can run slowly when run remotely]
+
+[Here](images/parameter_selection/parameters.html) is example output of the `gda clustering_params` run with the _Plasmodium falciparum_ assembly.
 
 We recommend selecting parameters based on minimising the percentage of unclassified sequence, while getting at least two clusters. E.g.:
 
@@ -482,7 +501,7 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited in Google Drive, at **https://drive.google.com/file/d/1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL/view?usp=sharing**.
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited in Google Drive, at https://drive.google.com/file/d/1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL/view?usp=sharing.
  
 If you have gdown (https://github.com/wkentaro/gdown, https://anaconda.org/conda-forge/gdown) installed on your system, you can download the Singularity image file from Google Drive with a terminal command:
  
@@ -495,12 +514,12 @@ If you have gdown (https://github.com/wkentaro/gdown, https://anaconda.org/conda
 You will need to make sure Singularity and Nextflow are installed on your cluster.
 For running GDA with the Singularity image, you should still clone this GitHub repository and add the `gda` wrapper script to `PATH`. To use the GDA Singularity image, you should provide the path to the image with the `--singularity_image_path` option of the `gda` wrapper script. The remaining software dependencies (RepeatModeler, HISAT2, LTRharvest, etc) will then be loaded from the Singularity image. This is an example command for extracting genomic features using Singularity:
 
-**Either** Plain command
+**Either** plain command
 ``` 
 gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>
 ```
  
-**Or** By submission to LSF
+**Or** by submission to LSF
 ``` 
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta --singularity_image_path <gda_singularity.simg>"
 ```

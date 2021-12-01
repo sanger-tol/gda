@@ -48,7 +48,7 @@ def process_buffer(buffer_array, buffer_array_index, buffer_array_start_window):
 
 
 def main(samtools_depth_path, header_title, chunk_size):
-    bedgraph_header = 'track type=bedGraph name="' + header_title + '" description="' + header_title + '" visibility=full color=221,148,68 altColor=0,100,200 priority=20'
+    bedgraph_header = 'track type=bedGraph name="' + header_title + '" description="' + header_title + '" visibility=full color=0,0,255 altColor=0,100,200 priority=20'
     print(bedgraph_header)
 
     in_data = gpf.ll(samtools_depth_path)
