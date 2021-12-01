@@ -12,22 +12,22 @@ A manuscript describing GDA is available from bioRxiv: XXXXXXXX
 
 Complete analyses presented in the manuscript are available here: https://drive.google.com/drive/folders/1XSNS_Jj0_UGxPXpzY-EwbzABGxaZgfRf?usp=sharing
 
-Below is a diagram of the components of the pipeline.
-
+Below is a diagram for a quick overview of what GDA does.
 
 ![](images/Figure_1.png)
 
 (A) Features sets are derived from the genome reference sequence (seq), repeat finding (rep), gene annotations (gene) and evolutionary relationships between genes (orth). Values for each feature are determined for each non-overlapping window of e.g. 5kb across the genome. (B) The resulting matrix of feature values per window is embedded in two dimensions and clustered to identify groups of windows with similar properties. (C) The data can be explored in a number of ways using a web-browser based app. The clustering labels are mapped back to the chromosomes to highlight architectural features and a heatmap displays the features which define the clusters.  
 
+A more technical diagram of the components of the pipeline in the form of a flowchart can be seen [here](images/gda_pipeline_flowchart.png).
+A [Nextflow](https://www.nextflow.io/)-based pipeline that includes various third party tools extracts the values of a set of genomic variables that describe a genome assembly. The values of genomic variables along chromosomes are stored as [bedgraph files](https://genome.ucsc.edu/goldenPath/help/bedgraph.html). The bedgraph files corresponding to one genome assembly are then merged into one tab separated values (TSV) file. In the following text, this file is referred to as "merged TSV" file. Scaling of values, dimensionality reduction with [UMAP](https://umap-learn.readthedocs.io/en/latest/) and clustering with [HDBSCAN](https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html) are then applied to the numbers in this TSV file. The locations of clusters along chromosomes are stored in a BED file.
 
-A more detailed diagram of the components of the pipeline in the form of a flowchart can be seen [here](images/gda_pipeline_flowchart.png)
 
 ### Requirements
 
-GDA software consists of three main parts: a genomic feature extraction pipeline, clustering scripts, and a Shiny app for viewing the results. The genomic feature extraction pipeline and the clustering scripts have been tested on a Linux server (Sanger farm) and have the following requirements:
+GDA software consists of three main parts: a genomic feature extraction pipeline, clustering scripts, and a [Shiny](https://shiny.rstudio.com/) app for viewing the results. The genomic feature extraction pipeline and the clustering scripts have been tested on a Linux server (Sanger farm) and have the following requirements:
 
-  * Conda
-  * Nextflow
+  * [Conda](https://docs.conda.io/en/latest/miniconda.html)
+  * [Nextflow](https://www.nextflow.io/)
   * Python3 
   * Java – with enough memory to initialise the Java virtual machine
   * Git
@@ -36,7 +36,7 @@ The Shiny app for viewing clustering results requires R and a number of R librar
 
 ### Notes
 
-We expect that the GDA feature extraction and analysis pipeline is run remotely on a compute cluster. Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
+We expect that the GDA feature extraction and analysis pipeline is run remotely on a compute cluster with Linux. Viewing the results of a GDA analysis is done in a Shiny app that runs in a web browser and thus we recommend that you copy your results onto your local machine to run the final step. Thus, some dependencies are required remotely and some locally (installation instructions below).
 
 The quick start tutorial will show you how to run the GDA pipeline end-to-end with test data (*Plasmodium falciparum* genome assembly [obtained from PlasmoDB](https://plasmodb.org/common/downloads/release-49/Pfalciparum3D7/fasta/data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta)) and default parameters. In reality you will likely want to add additional, optional tracks such as gene annotations, repeat finding, transcriptome data and orthology information (these are also detailed below).
 
@@ -59,7 +59,7 @@ The quick start tutorial will show you how to run the GDA pipeline end-to-end wi
 
 **1. Set up a GDA conda environment on the farm (need to install conda? – https://docs.conda.io/en/latest/miniconda.html)**
 
-  * Clone the GitLab repository
+  * Clone the GitHub repository
 
 `git clone https://github.com/eeaunin/gda.git`
 
@@ -71,7 +71,7 @@ The quick start tutorial will show you how to run the GDA pipeline end-to-end wi
 
 `conda activate gda_env`
 
-If the conda installation does not work for you, you can try using the GDA singularity image instead, see [Using GDA Singularity image](#using-gda-singularity-image)
+If the conda installation does not work for you, you can try using the GDA [Singularity](https://sylabs.io/guides/3.0/user-guide/quick_start.html) image instead, see [Using GDA Singularity image](#using-gda-singularity-image).
 
 **2. Run GDA**
 
@@ -82,7 +82,7 @@ If the conda installation does not work for you, you can try using the GDA singu
 gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta
 ```
 
-**Or** by submission to LSF
+**Or** by submission to Load Sharing Facility (LSF)
 ```
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_test.o -e gda_test.e "gda extract_genomic_features --threads 12 --pipeline_run_folder gda_pipeline_run gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 ```
@@ -165,7 +165,7 @@ This shows you how well the clustering worked.  Each point in the plot represent
 Each chromosome/scaffold/contig is shown, with each window coloured based on the clustering. Therefore, this shows how the clusters pattern the chromosomes and, for example, whether a particular cluster tends to be found at the end of chromosomes. Do all chromosomes have a similar pattern? Do sex chromosomes, B chromosomes etc. look distinct from the autosomes?
 
 **Cluster heatmaps**
-![](images/03_gda_shiny_cluster_heatmaps)
+![](images/03_gda_shiny_cluster_heatmaps.png)
 
 GDA determines features which have high or low values for windows in a particular cluster compared to other clusters. The heatmap in this tab shows the relative values across clusters for each significantly variable feature. Green means a feature has a relatively high value in a particular cluster, red a relatively low value. You can find the exact values and which were significantly different in the “Feature tables” tab. Adjusting the plot height and the label size can be particularly useful in this tab so that the heatmap is legible.
 
@@ -187,9 +187,11 @@ This tab contains a heatmap which clusters chromosomes by their cluster composit
 **Cluster junction counts**
 ![](images/07_gda_shiny_cluster_junction_counts.png)
 
-This tab shows the observed counts of junctions between windows belonging to each UMAP+HDBSCAN cluster. Junctions between windows belonging to the same type of cluster are included in the counts. The observed counts are compared with counts expected if windows were distributed randomly. Junctions with counts that are significantly different from what is expected by chance (based on Fisher test) are shown in bold+italics.
+This tab shows the observed counts of junctions between windows belonging to each UMAP+HDBSCAN cluster. Junctions between windows belonging to the same type of cluster are included in the counts. The observed counts are compared with counts expected if windows were distributed randomly. Junctions with counts that are significantly different from what is expected by chance (based on Fisher test) are shown in **_bold+italics_**.
 
 ### View clusters and significant tracks in IGV
+
+The values of variables along chromosomes are stored as [bedgraph files](https://genome.ucsc.edu/goldenPath/help/bedgraph.html) and can be viewed in genome browsers such as [IGV](https://software.broadinstitute.org/software/igv). 
 
 **1. Install IGV**
 
@@ -204,7 +206,7 @@ https://software.broadinstitute.org/software/igv/download
 `scp -r <remote_machine>:<path>/gda_out/ .`
 
 **4. Make IGV session file**
-
+IGV allows saving and loading [session files](https://software.broadinstitute.org/software/igv/Sessions), which are XML files that keep track of the program state (what FASTA, BED and bedgraph files have been simultaneously loaded to IGV).
 ```
 gda/gda_make_igv_session_file.py -g gda/test_data/PlasmoDB-49_Pfalciparum3D7.gff gda_out/cluster_heatmap.csv gda_out/PlasmoDB-49_Pfalciparum3D7_Genome/clusters.bed gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta bedgraph_output/
 ```
@@ -214,7 +216,7 @@ gda/gda_make_igv_session_file.py -g gda/test_data/PlasmoDB-49_Pfalciparum3D7.gff
 File →“Open Session”
 
 ![](images/gda_pfalciparum_igv_screensh.png)
-The IGV screenshot shows _Plasmodium falciparum_ chromosome 1, with some GDA bedgraph tracks and the 'clusters.bed' file loaded.
+The IGV screenshot above shows _Plasmodium falciparum_ chromosome 1, with some GDA bedgraph tracks and the 'clusters.bed' file loaded.
 
 ### Understanding the output files
 
@@ -243,7 +245,7 @@ We recommend you add as many features as possible so that the clustering is able
 #### Optional features which do not require additional data
 
 **1. Run repeat finding to get bedgraph tracks of individual complex repeat features as well as complex_repeat_sum (the sum of all these features)**
-The GDA pipeline contains two mandatory components for repeat detection: TandemRepeatsFinder for tandem repeats and EMBOSS einverted for inverted repeats. Besides these, the GDA pipeline has two optional repeat family detection modules from which the user can choose one to run. The first one of these modules uses RepeatModeler+RepeatMasker and the second one uses Red+MeShClust2. RepeatModeler+RepeatMasker is relatively slow and may take ~1 week to run for large genomes (11 hours for the test dataset). On Sanger farm5, this will require using the basement queue. The Red+Meshclust2 module is much faster, but may produce more noisy repeat families, depending on the genome.
+The GDA pipeline contains two mandatory components for repeat detection: [TandemRepeatsFinder](https://github.com/Benson-Genomics-Lab/TRF) for tandem repeats and [EMBOSS einverted](http://emboss.sourceforge.net/apps/cvs/emboss/apps/einverted.html) for inverted repeats. Besides these, the GDA pipeline has two optional repeat family detection modules from which the user can choose one to run. The first one of these modules uses [RepeatModeler+RepeatMasker](https://www.repeatmasker.org/RepeatModeler/) and the second one uses [Red+MeShClust2](https://github.com/BioinformaticsToolsmith/MeShClust2). RepeatModeler+RepeatMasker is relatively slow and may take ~1 week to run for large genomes (11 hours for the test dataset). On Sanger farm5, this will require using the basement queue. The Red+Meshclust2 module is much faster, but may produce more noisy repeat families, depending on the genome.
 When the GDA pipeline is run with repeat family detection enabled, the bedgraph files of each complex repeat family appear in the `complex_repeats` subdirectory of the `bedgraph_output` directory. If RepeatModeler is used, a `simple_repeats` directory that contains bedgraph files of simple repeat families is also produced. 
 In addition, a bedgraph file of the sum of complex repeat families (and if using RepeatModeler, of simple repeat families) is produced. The individual bedgraph tracks of each repeat family are not used as the input for UMAP clustering by default, but the tracks for the sums of simple or complex repeat families are used.
 
@@ -266,8 +268,8 @@ gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat
 bsub -n12 -R"span[hosts=1]" -M10000 -R 'select[mem>10000] rusage[mem=10000]' -o gda_repeatmodeler_test.o -e gda_repeatmodeler_test.e "gda extract_genomic_features --threads 12 --run_repeat_family_detection --repeat_family_detection_engine repeatmodeler gda/test_data/PlasmoDB-49_Pfalciparum3D7_Genome.fasta"
 ```
 
-**2. De novo gene annotation**
-The GDA pipeline can take an existing gene annotations GFF3 file as input. For the cases where there is no existing gene annotations available for the genome, the pipeline contains an optional module that produces a de novo annotation of protein coding genes, rRNA and tRNA genes (using Augustus, Barrnap and tRNAscan-SE). The gene annotation module can optionally take an annotated related genome as the input and produce hints for Augustus based on annotation transfer with Liftoff. Several bedgraph feature tracks are derived from gene annotations: `mRNA_annotation`, `exon_count`, `gene_average_exon_length`, `gene_average_intron_length`, `gene_length`, `tRNA_annotations`, `rRNA_annotations`. Optionally, a `gene_dna_strand_bias` track is also produced. 
+**2. _De novo_ gene annotation**
+The GDA pipeline can take an existing gene annotations GFF3 file as input. For the cases where there is no existing gene annotations available for the genome, the pipeline contains an optional module that produces a _de novo_ annotation of protein coding genes, rRNA and tRNA genes (using [Augustus](https://bioinf.uni-greifswald.de/augustus/), [Barrnap](https://github.com/tseemann/barrnap) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/)). The gene annotation module can optionally take an annotated related genome as the input and produce hints for Augustus based on annotation transfer with [Liftoff](https://github.com/agshumate/Liftoff). Several bedgraph feature tracks are derived from gene annotations: `mRNA_annotation`, `exon_count`, `gene_average_exon_length`, `gene_average_intron_length`, `gene_length`, `tRNA_annotations`, `rRNA_annotations`. Optionally, a `gene_dna_strand_bias` track is also produced. 
 Also, a GFF file of the annotations can be found in the `gene_annotation` folder. The GFF file also includes the tRNAscan and Barrnap results.
 
 Multiple options are required
@@ -317,7 +319,7 @@ The user can specify non-standard GFF3 feature tags from the input GFF3 file to 
 
 
 **3. RNA-Seq coverage**
-RNA-Seq coverage is determined using the mapping of reads to the assembly with HISAT2. The input is a pair of gzipped FASTQ reads.
+RNA-Seq coverage is determined using the mapping of reads to the assembly with [HISAT2](http://daehwankimlab.github.io/hisat2/manual/). The input is a pair of gzipped FASTQ reads.
 ```
 --rna_seq_fastq_1_path
 --rna_seq_fastq_2_path
@@ -347,14 +349,14 @@ The resulting feature track is called `hisat2_samtools_depth` and the raw mappin
 
 `--orthomcl_references_folder`
 
-This folder should contain subfolders, each for separate OrthoMCL runs, e.g. for closely related and more distantly related species (although a single folder is perfectly fine). The folder name is arbitrary. Within each folder there should be protein fasta files for each reference proteome and a file called `table_for_gg_file.csv` with the names of these files and a simple name for the species. GG files (genome gene relation file) are used by OrthoMCL to relate genes to genomes. e.g.
+This folder should contain subfolders, each for separate [OrthoMCL](https://orthomcl.org/orthomcl/app) runs, e.g. for closely related and more distantly related species (although a single folder is perfectly fine). The folder name is arbitrary. Within each folder there should be protein FASTA files for each reference proteome and a file called `table_for_gg_file.csv` with the names of these files and a simple name for the species. GG files (genome gene relation file) are used by OrthoMCL to relate genes to genomes. e.g.
 
 ```
 Pchabaudi,PlasmoDB-49_Pchabaudichabaudi_AnnotatedProteins.fasta
 Tgondii,ToxoDB-51_TgondiiME49_AnnotatedProteins.fasta
 ```
 
-Proteins from the genome under consideration will be added behind the scenes (they are derived from the assembly FASTA file and annotations GFF3 file using gffread). N.b. you need to provide annotation for your genome assembly or have it transferred/predicted in order to do the orthology analysis. 
+Proteins from the genome under consideration will be added behind the scenes (they are derived from the assembly FASTA file and annotations GFF3 file using [gffread](https://github.com/gpertea/gffread)). N.b. you need to provide annotation for your genome assembly or have it transferred/predicted in order to do the orthology analysis. 
 
 e.g.
 
@@ -403,11 +405,11 @@ Change the window size (5kb)
 
 `--chunk_size`
 
-This is perhaps the most important option in GDA. From a purely computational point of view, GDA will struggle with clustering a very large number of windows. From a biological perspective, it determines the resolution at which you are analysing the genome assembly. We find that 5kb works very well for the relatively miniscule Plasmodium genome (~20Mb). For the common toad (Bufo bufo) genome, which is 4.94 Gb we have used 1 Mb window size. Aiming for 5000 windows works very nicely computationally, but you should experiment with a few window sizes, to see what gives an interesting view of the genome. You needn't run feature extraction multiple times. Instead use:
+This is perhaps the most important option in GDA. From a purely computational point of view, GDA will struggle with clustering a very large number of windows. From a biological perspective, it determines the resolution at which you are analysing the genome assembly. We find that 5kb works very well for the relatively miniscule _Plasmodium_ genome (~20Mb). For the common toad (_Bufo bufo_) genome, which is 4.94 Gb we have used 1 Mb window size. Aiming for 5000 windows works very nicely computationally, but you should experiment with a few window sizes, to see what gives an interesting view of the genome. You needn't run feature extraction multiple times. Instead use:
 
 `gda downsample_merged_tsv <tsv> <factor>`
 
-If you started with a 5kb window size, use 4 as the downsampling factor and you will get a merged tsv file with 20kb windows. Similarly, use a factor of 10 to get 50kb windows.
+If you started with a 5kb window size, use 4 as the downsampling factor and you will get a merged TSV file with 20kb windows. Similarly, use a factor of 10 to get 50kb windows.
 
 If the genomic feature extraction pipeline produces an output TSV file that has 10000 or more windows, a downsampled TSV file with approximately 5000 windows will be automatically generated alongside the main output TSV file.
 
@@ -461,12 +463,12 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 | ------------- | ------------- |
 | at_skew | AT skew |
 | cag_freq | CAG trinucleotide repeat frequency |
-| complex_repeats_bedgraph | complex repeats detected using RepeatModeler+RepeatMasker or Red+MeShClust2 |
+| complex_repeats_bedgraph | complex repeats detected using [RepeatModeler+RepeatMasker](https://www.repeatmasker.org/RepeatModeler/) or [Red+MeShClust2](https://github.com/BioinformaticsToolsmith/MeShClust2) |
 | cpg_percentage | CpG dinucleotide frequency |
-| dustmasker_low_complexity_percentage | low complexity sequence frequency (detected using Dustmasker) |
+| dustmasker_low_complexity_percentage | low complexity sequence frequency (detected using [Dustmasker](https://www.ncbi.nlm.nih.gov/IEB/ToolBox/CPP_DOC/lxr/source/src/app/dustmasker/)) |
 | ectopic_apicoplast | putative ectopic apicoplast (detected using BLAST against user-provided apicoplast sequence) |
 | ectopic_mitochondrion | putative NUMTs (detected using BLAST against user-provided mitochondrial sequence) |
-| einverted | inverted repeats (detected using EMBOSS einverted) |
+| einverted | inverted repeats (detected using [EMBOSS einverted](http://emboss.sourceforge.net/apps/cvs/emboss/apps/einverted.html)) |
 | exon_count | average exon count per mRNA gene |
 | gaps | assembly gaps (Ns) |
 | gc_percentage | GC% |
@@ -476,10 +478,10 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 | gene_dna_strand_bias | tendency of genes to be all on the same strand in the window. The value is 1 if all genes in the window are on the same strand (it does not matter which one). The value is 0 if genes in the window are equally distributed between both strands |
 | gene_length | average mRNA gene length |
 | kmer_deviation_kmer_size_3* | kmer skew for a for a particular kmer length (how much the distribution of kmers in the window differs from what is expected by change, given the GC content of the sequence in the window) |
-| ltrdigest_protein_matches | LTRdigest protein matches |
-| ltrdigest_retrotransposons | putative retrotransposons (detected using LTRharvest and LTRdigest). Only the sequences containing LTRdigest protein matches are counted |
-| mRNA_annotations | mRNA gene density (either from user-provided gene annotations or detected using Augustus) |
-| ortholog_count | average number of orthologs (OrthoMCL orthologs in other species) for proteins in the window |
+| ltrdigest_protein_matches | [LTRdigest](https://github.com/genometools/genometools) protein matches |
+| ltrdigest_retrotransposons | putative retrotransposons (detected using [LTRharvest and LTRdigest](https://github.com/genometools/genometools)). Only the sequences containing LTRdigest protein matches are counted |
+| mRNA_annotations | mRNA gene density (either from user-provided gene annotations or detected using [Augustus](https://bioinf.uni-greifswald.de/augustus/)) |
+| ortholog_count | average number of orthologs ([OrthoMCL](https://orthomcl.org/orthomcl/) orthologs in other species) for proteins in the window |
 | paralog_count | average number of paralogs (OrthoMCL orthologs within the same species) for proteins in the window |
 | protein_conservation_ratio | reflects the average proportion of species in the OrthoMCL run that have orthologs for the target species proteins in the window. The value is 1 if all target species proteins in the window have OrthoMCL orthologs in all other species in the OrthoMCL run. The value is 0 if none of the target species proteins in the window have any OrthoMCL orthologs in any other species in the OrthoMCL run.  |
 | pseudogene_annotations | pseudogenes (read from user-provided GFF3 file if this feature is present there) |
@@ -489,10 +491,10 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 | stop_codon_freq | stop codon frequency |
 | sum_of_complex_repeats | sum of values of RepeatModeler+RepeatMasker or Red+MeShClust2 tracks for complex repeat families |
 | sum_of_simple_repeats | sum of values of RepeatModeler tracks for simple repeat families |
-| tandem_repeat_density | tandem repeats (detected using Tandem Repeats Finder) |
+| tandem_repeat_density | tandem repeats (detected using [Tandem Repeats Finder](https://github.com/Benson-Genomics-Lab/TRF)) |
 | telomere_freq | telomeric sequence frequency |
-| tRNA_annotations | tRNAs (either from user-provided gene annotations or detected using tRNAscan-SE) |
-| wgsim_minimap2_coverage | coverage of WGSIM simulated short reads, derived from the assembly itself, with a target coverage of 10x. The reads have been mapped back to the assembly using Minimap2 using the short read mapping mode. Multimapping simulated reads have been removed before calculating the coverage |
+| tRNA_annotations | tRNAs (either from user-provided gene annotations or detected using [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/)) |
+| wgsim_minimap2_coverage | coverage of [WGSIM](https://github.com/lh3/wgsim) simulated short reads, derived from the assembly itself, with a target coverage of 10x. The reads have been mapped back to the assembly using Minimap2 using the short read mapping mode. Multimapping simulated reads have been removed before calculating the coverage |
 
 
 ### Other output
