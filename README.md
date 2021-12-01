@@ -504,11 +504,11 @@ When clustering a large number of genomic windows, you may need to set HDBSCAN's
 
 ### Using GDA Singularity image
 
-As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited in Google Drive, at https://drive.google.com/file/d/1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL/view?usp=sharing.
+As an alternative to using conda to install the dependencies for GDA, it is also possible to read the dependencies from a Singularity image. A Singularity image file with the dependencies for GDA has been deposited in Google Drive, at https://drive.google.com/file/d/1cKw1cXjUBUODzBbxw7txAE80Q8g5hl8_/view?usp=sharing.
  
 If you have gdown (https://github.com/wkentaro/gdown, https://anaconda.org/conda-forge/gdown) installed on your system, you can download the Singularity image file from Google Drive with a terminal command:
  
-`gdown https://drive.google.com/uc?id=1okx9AEUGoADHvlHvdpOSZnppk0CBUMdL`
+`gdown https://drive.google.com/uc?id=1cKw1cXjUBUODzBbxw7txAE80Q8g5hl8_`
  
  On the Sanger farm, Singularity can be started from the farm module:
 
