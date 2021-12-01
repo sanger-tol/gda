@@ -436,7 +436,7 @@ By default the clustering will be run with `n_neighbors` set to 5, 10, 15, 20, 5
 
 [warning this can run slowly when run remotely]
 
-[Here](images/parameter_selection/parameters.html) is example output of the `gda clustering_params` run with the _Plasmodium falciparum_ assembly.
+[Here](images/pfalciparum_gda_parameters_example.pdf) is example output of the `gda clustering_params` run with the _Plasmodium falciparum_ assembly.
 
 We recommend selecting parameters based on minimising the percentage of unclassified sequence, while getting at least two clusters. E.g.:
 
