@@ -8,7 +8,7 @@ GDA (Genome Decomposition Analysis) is a bioinformatic pipeline to analyse genom
 
 GDA is developed by Eerik Aunin (ea10@sanger.ac.uk) and Adam Reid (ajr236@cam.ac.uk)
 
-A manuscript describing GDA is available from bioRxiv: XXXXXXXX
+A manuscript describing GDA is available from bioRxiv: https://biorxiv.org/cgi/content/short/2021.12.01.470736v1
 
 Complete analyses presented in the manuscript are available here: https://drive.google.com/drive/folders/1XSNS_Jj0_UGxPXpzY-EwbzABGxaZgfRf?usp=sharing
 
