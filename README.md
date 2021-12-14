@@ -53,6 +53,7 @@ The quick start tutorial will show you how to run the GDA pipeline end-to-end wi
   * [Understanding the default features](#understanding-the-default-features)
   * [Other output](#other-output)
   * [Using GDA Singularity image](#using-gda-singularity-image)
+  * [Clustering the features of multiple genomes at once](#clustering-the-features-of-multiple-genomes-at-once)
   * [Troubleshooting](#troubleshooting)
   * [Ideas for analysis](#ideas-for-analysis)
 
