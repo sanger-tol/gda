@@ -66,7 +66,7 @@ def main(fasta_path, fastq_1_path, fastq_2_path, mapping_folder, pipeline_output
         max_intronlen_string = "--max-intronlen " + str(max_intronlen) + " "
     hisat_command = "hisat2 -p {} {} -q -x {} -1 {} -2 {} -S {} {} --summary-file {} --met-file {}".format(threads, strandedness_flag, mapping_folder_fasta_path, fastq_1_path, fastq_2_path, sam_file_path, max_intronlen_string, summary_file_path, metrics_file_path)
     gpf.run_system_command(hisat_command)
-    sam_to_bam_command = "sam_to_sorted_indexed_bam.py " + sam_file_path + " " + threads
+    sam_to_bam_command = "sam_to_sorted_indexed_bam.py " + sam_file_path + " --threads " + threads
     gpf.run_system_command(sam_to_bam_command)
 
     samtools_depth_command = "samtools depth -aa {} --reference {} > {}".format(sorted_bam_path, mapping_folder_fasta_path, samtools_depth_file_path)
