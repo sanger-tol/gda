@@ -51,28 +51,42 @@ def get_orthomcl_output_file_path(orthomcl_error_stream_path):
     return orthomcl_file_path
 
 
-def fix_characters_in_concat_fasta(concat_proteomes_temp_fasta_path, concat_proteomes_fasta_path):
-    """
-    Takes an input proteome file and outputs a proteome file where characters that break Diamond (#+.) have been replaced with an asterisk
-    """
-    with open(concat_proteomes_fasta_path, "w") as f:
-        proteins_temp_data = gpf.ll(concat_proteomes_temp_fasta_path)
-        for line in proteins_temp_data:
-            if line.startswith(">") == False:
-                line = line.replace("#", "*")
-                line = line.replace("+", "*")
-                line = line.replace(".", "*")
-            f.write(line + "\n")
-    os.remove(concat_proteomes_temp_fasta_path)
+#def fix_characters_in_concat_fasta(concat_proteomes_temp_fasta_path, concat_proteomes_fasta_path):
+#    """
+#    Takes an input proteome file and outputs a proteome file where characters that break Diamond (#+.) have been replaced with an asterisk
+#    """
+#    with open(concat_proteomes_fasta_path, "w") as f:
+#        proteins_temp_data = gpf.ll(concat_proteomes_temp_fasta_path)
+#        for line in proteins_temp_data:
+#            if line.startswith(">") == False:
+#                line = line.replace("#", "*")
+#                line = line.replace("+", "*")
+#                line = line.replace(".", "*")
+#            f.write(line + "\n")
+#    os.remove(concat_proteomes_temp_fasta_path)
 
 
 def main(proteomes_folder, csv_for_gg_file, orthomcl_folder, orthomcl_error_stream_path, threads, memory_limit, diamond_nonsensitive):
     gpf.run_system_command("mkdir -p " + orthomcl_folder)
-    concat_proteomes_temp_fasta_path = orthomcl_folder + "/concat_proteomes_temp.faa"
+    #concat_proteomes_temp_fasta_path = orthomcl_folder + "/concat_proteomes_temp.faa"
     concat_proteomes_fasta_path = orthomcl_folder + "/concat_proteomes.faa"
-    gpf.run_system_command("cat {}/*.f* > {}".format(proteomes_folder, concat_proteomes_temp_fasta_path))
+    input_proteomes = gpf.get_file_paths(proteomes_folder, "faa")
+    input_proteomes.extend(gpf.get_file_paths(proteomes_folder, "fa"))
+    input_proteomes.extend(gpf.get_file_paths(proteomes_folder, "fasta"))
 
-    fix_characters_in_concat_fasta(concat_proteomes_temp_fasta_path, concat_proteomes_fasta_path)
+    with open(concat_proteomes_fasta_path, "w") as f:
+        for input_proteome in input_proteomes:
+            input_proteome_data = gpf.ll(input_proteome)
+            for line in input_proteome_data:
+                if line.startswith(">") == False:
+                    line = line.replace("#", "*")
+                    line = line.replace("+", "*")
+                    line = line.replace(".", "*")
+                f.write(line + "\n")
+
+    #gpf.run_system_command("cat {}/*.f* > {}".format(proteomes_folder, concat_proteomes_temp_fasta_path))
+
+    #fix_characters_in_concat_fasta(concat_proteomes_temp_fasta_path, concat_proteomes_fasta_path)
 
     diamond_makedb_command = "diamond makedb --in {} -d {}".format(concat_proteomes_fasta_path, concat_proteomes_fasta_path)
     gpf.run_system_command(diamond_makedb_command)
