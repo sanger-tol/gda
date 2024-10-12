@@ -206,11 +206,11 @@ def main(env_name, gda_downloads_folder, gda_python_scripts_folder, download_dfa
     if dfam_user_folder != "":
         check_user_provided_dfam_folder(dfam_user_folder, dfam_file_names)
 
-    packages_to_install = "parallel=20201122 repeatmodeler=2.0.1 diamond=2.0.4 perl-bioperl=1.7.2 pandas=1.1.3 emboss=6.6.0 hisat2=2.2.1 r-base=3.6.3 r-gplots=3.0.1.1 r-ggplot2=3.1.1 trnascan-se=2.0.6 blast=2.10.1 augustus=3.3.3 minimap2=2.17 samtools=1.10 wgsim=1.0 barrnap=0.9 gffread=0.12.1 mcl=14.137 nextflow=0.30.1 trf=4.09.1 openjdk=8.0.152 mafft=7.475 hmmer=3.3.2 umap-learn=0.4.6 hdbscan=0.8.27 matplotlib=3.3.4 json=0.1.1 numba=0.51.2 spectra=0.0.11 statsmodels=0.12.2 scipy=1.6.2 biopython=1.78 kcounter=0.1.0 liftoff=1.6.1 bedtools=2.30.0" # numba 0.53.0 causes umap to produce errors
+    packages_to_install = "parallel=20201122 repeatmodeler=2.0.1 diamond=2.0.4 perl-bioperl=1.7.2 pandas=1.1.3 emboss=6.6.0 hisat2=2.2.1 r-base=3.6.3 r-gplots=3.1.1 r-ggplot2=3.3.3 trnascan-se=2.0.6 blast=2.10.1 augustus=3.3.3 minimap2=2.17 samtools=1.10 wgsim=1.0 barrnap=0.9 gffread=0.12.1 mcl=14.137 nextflow=0.30.1 trf=4.09.1 openjdk=8.0.412 mafft=7.475 hmmer=3.3.2 umap-learn=0.4.6 hdbscan=0.8.27 matplotlib=3.3.4 json=0.1.1 numba=0.51.2 spectra=0.0.11 statsmodels=0.12.2 scipy=1.6.2 biopython=1.78 kcounter=0.1.0 liftoff=1.6.1 bedtools=2.30.0" # numba 0.53.0 causes umap to produce errors
     # Packages for the Shiny app: left out for now because they conflict with the rest of the packages
     # r-shiny=1.1.0 r-rjson=0.2.20 r-reshape2=1.4.3 r-gridextra=2.3 r-scales=1.0.0 r-svglite=1.2.3
 
-    channels = ["conda-forge", "bioconda", "biocore", "r", "anaconda", "jmcmurray"]
+    channels = ["conda-forge", "bioconda", "jmcmurray"]
 
     channels_string = "-c " + " -c ".join(channels)
 
