@@ -2,6 +2,9 @@
 
 Genome Decomposition Analysis for the characterisation of genome architecture
 
+> [!WARNING]
+> This repository isn't maintained any more
+
 ### What is GDA?
 
 GDA (Genome Decomposition Analysis) is a bioinformatic pipeline to analyse genome architecture. Using, as a minimum, a genome assembly (the more complete the better), it will determine features in non-overlapping windows across the sequence and identify windows with common features. The assembly will then be annotated based on these similarities, highlighting structurally similar genomic regions.
@@ -9,7 +12,7 @@ GDA (Genome Decomposition Analysis) is a bioinformatic pipeline to analyse genom
 GDA is developed by Eerik Aunin (ea10@sanger.ac.uk) and Adam Reid (ajr236@cam.ac.uk)
 
 A manuscript describing GDA is has been published in BMC Genomics:  
-[Characterising genome architectures using genome decomposition analysis.](https://trebuchet.public.springernature.app/get_content/7bf5d51e-3e6d-4724-af60-2e90fb074510)  
+[Characterising genome architectures using genome decomposition analysis.](https://dx.doi.org/10.1186/s12864-022-08616-3)  
 Aunin E, Berriman M, Reid AJ.  
 BMC Genomics. 2022 May 25;23(1):398. doi: 10.1186/s12864-022-08616-3.  
 PMID: 35610562 
